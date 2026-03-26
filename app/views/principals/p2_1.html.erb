@@ -1,0 +1,69 @@
+<div class="neo-container" style="width: 800px; max-width: 90%;">
+  <div style="text-align: left; font-size: 12px; color: #888; margin-bottom: 20px;">
+    <a href="/principal" style="color: #888; text-decoration: none;">Inicio</a> > Principal 1 > Principal 1.1
+  </div>
+
+  <div class="neo-title">Módulo Principal 1.1</div>
+  <div class="neo-subtitle">Pantalla estática de demostración</div>
+
+  <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: flex-start;">
+    <button id="btn-agregar" class="neo-button" style="width: auto; padding: 10px 20px;">Agregar Nuevo</button>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a;">
+    <thead>
+      <tr style="border-bottom: 2px solid #c9d0dabc;">
+        <th style="padding: 10px;">Dato de Prueba</th>
+        <th style="padding: 10px; text-align: center;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-estatica">
+      <tr style="border-bottom: 1px solid #c9d0dabc;">
+        <td style="padding: 10px;">Vehículo de muestra</td>
+        <td style="padding: 10px; text-align: center;">
+          <button class="neo-button btn-detalle" style="padding: 5px 10px; font-size: 12px; width: auto;">Detalle</button>
+          <button class="neo-button btn-editar" style="padding: 5px 10px; font-size: 12px; width: auto;">Editar</button>
+          <button class="neo-button btn-eliminar" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const permisosLocales = JSON.parse(localStorage.getItem('permisos_usuario') || '{}');
+
+  // Buscar permisos exactos de este módulo
+  let misPermisos = null;
+  for (const categoria in permisosLocales) {
+    const moduloEncontrado = permisosLocales[categoria].find(m => m.nombre === 'Principal 2.1');
+    if (moduloEncontrado) {
+      misPermisos = moduloEncontrado.permisos;
+      break;
+    }
+  }
+
+  // Lógica de visualización basada en permisos
+  if (!misPermisos || !misPermisos.consulta) {
+    document.getElementById('tabla-estatica').innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 20px;">No tienes permiso de consulta</td></tr>';
+  }
+
+  if (!misPermisos || !misPermisos.agregar) {
+    const btnAgregar = document.getElementById('btn-agregar');
+    if (btnAgregar) btnAgregar.style.display = 'none';
+  }
+
+  if (!misPermisos || !misPermisos.editar) {
+    document.querySelectorAll('.btn-editar').forEach(btn => btn.style.display = 'none');
+  }
+
+  if (!misPermisos || !misPermisos.eliminar) {
+    document.querySelectorAll('.btn-eliminar').forEach(btn => btn.style.display = 'none');
+  }
+
+  if (!misPermisos || !misPermisos.detalle) {
+    document.querySelectorAll('.btn-detalle').forEach(btn => btn.style.display = 'none');
+  }
+});
+</script>

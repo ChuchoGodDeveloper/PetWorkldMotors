@@ -1,0 +1,233 @@
+<div class="neo-container" style="width: 1000px; max-width: 95%;">
+  <div style="text-align: left; font-size: 12px; color: #888; margin-bottom: 20px;">
+    <a href="/principal" style="color: #888; text-decoration: none;">Inicio</a> > Seguridad > Usuarios
+  </div>
+
+  <div class="neo-title">Módulo Usuario</div>
+
+  <form id="form-usuario" style="margin-bottom: 30px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+    <input type="hidden" id="usuario-id">
+
+    <div style="flex: 1; min-width: 200px;">
+      <input type="text" id="strNombreUsuario" class="neo-input" style="margin-bottom: 0;" placeholder="Nombre de Usuario" required>
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <select id="idPerfil" class="neo-input" style="margin-bottom: 0; padding: 10px;" required>
+        <option value="">Seleccione Perfil...</option>
+      </select>
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <input type="password" id="strPwd" class="neo-input" style="margin-bottom: 0;" placeholder="Contraseña">
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <input type="email" id="strCorreo" class="neo-input" style="margin-bottom: 0;" placeholder="Correo Electrónico" required>
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <input type="text" id="strNumeroCelular" class="neo-input" style="margin-bottom: 0;" placeholder="Número Celular">
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <select id="idEstado_Usuario" class="neo-input" style="margin-bottom: 0; padding: 10px;" required>
+        <option value="1">Activo</option>
+        <option value="0">Inactivo</option>
+      </select>
+    </div>
+
+    <div style="flex: 1; min-width: 200px;">
+      <label style="font-size: 12px; color: #666;">Imagen de Perfil:</label>
+      <input type="file" id="imagen_usuario" accept="image/*" class="neo-input" style="margin-bottom: 0; padding: 10px;">
+    </div>
+
+    <div style="width: 100%; display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+      <button type="submit" class="neo-button" style="width: auto; padding: 10px 20px;">Guardar</button>
+      <button type="button" class="neo-button" style="width: auto; padding: 10px 20px; display: none;" id="btn-cancelar">Cancelar</button>
+    </div>
+  </form>
+
+  <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a; font-size: 13px;">
+    <thead>
+      <tr style="border-bottom: 2px solid #c9d0dabc;">
+        <th style="padding: 10px;">Imagen</th>
+        <th style="padding: 10px;">Usuario</th>
+        <th style="padding: 10px;">Perfil</th>
+        <th style="padding: 10px;">Correo</th>
+        <th style="padding: 10px;">Celular</th>
+        <th style="padding: 10px;">Estado</th>
+        <th style="padding: 10px; text-align: center;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-usuarios"></tbody>
+  </table>
+
+  <div id="paginacion" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('jwt_token');
+  if (!token) window.location.replace('/login');
+
+  const perfiles = <%= raw Perfil.all.select(:id, :strNombre_Perfil).to_json %>;
+  const selectPerfil = document.getElementById('idPerfil');
+  perfiles.forEach(p => selectPerfil.add(new Option(p.strNombre_Perfil, p.id)));
+
+  const tabla = document.getElementById('tabla-usuarios');
+  const form = document.getElementById('form-usuario');
+  const paginacion = document.getElementById('paginacion');
+  const btnCancelar = document.getElementById('btn-cancelar');
+
+  const inputs = {
+    id: document.getElementById('usuario-id'),
+    strNombreUsuario: document.getElementById('strNombreUsuario'),
+    idPerfil: selectPerfil,
+    strPwd: document.getElementById('strPwd'),
+    strCorreo: document.getElementById('strCorreo'),
+    strNumeroCelular: document.getElementById('strNumeroCelular'),
+    idEstado_Usuario: document.getElementById('idEstado_Usuario'),
+    imagen_usuario: document.getElementById('imagen_usuario')
+  };
+
+  let currentPage = 1;
+
+  const cargarUsuarios = async (page = 1) => {
+    try {
+      const res = await fetch(`/usuarios.json?page=${page}`);
+      const json = await res.json();
+      
+      tabla.innerHTML = '';
+      json.data.forEach(u => {
+        const imgTag = u.imagen_url ? `<img src="${u.imagen_url}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">` : 'Sin Imagen';
+        
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid #c9d0dabc';
+        tr.innerHTML = `
+          <td style="padding: 10px;">${imgTag}</td>
+          <td style="padding: 10px;">${u.strNombreUsuario}</td>
+          <td style="padding: 10px;">${u.perfil}</td>
+          <td style="padding: 10px;">${u.strCorreo}</td>
+          <td style="padding: 10px;">${u.strNumeroCelular || ''}</td>
+          <td style="padding: 10px;">${u.estado}</td>
+          <td style="padding: 10px; text-align: center;">
+            <button class="neo-button" style="padding: 5px 10px; font-size: 11px; width: auto;" onclick="editarUsuario(${u.id})">Editar</button>
+            <button class="neo-button" style="padding: 5px 10px; font-size: 11px; width: auto; color: #ff4757;" onclick="eliminarUsuario(${u.id})">Eliminar</button>
+          </td>
+        `;
+        tabla.appendChild(tr);
+      });
+
+      renderizarPaginacion(json.meta.current_page, json.meta.total_pages);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const renderizarPaginacion = (current, total) => {
+    paginacion.innerHTML = '';
+    for (let i = 1; i <= total; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = 'neo-button';
+      btn.style.width = '40px';
+      btn.style.padding = '10px';
+      if (i === current) btn.style.boxShadow = 'inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8)';
+      btn.onclick = () => { currentPage = i; cargarUsuarios(currentPage); };
+      paginacion.appendChild(btn);
+    }
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = inputs.id.value;
+    const url = id ? `/usuarios/${id}.json` : '/usuarios.json';
+    const method = id ? 'PUT' : 'POST';
+
+    // Se usa FormData porque hay archivo de imagen
+    const formData = new FormData();
+    formData.append('usuario[strNombreUsuario]', inputs.strNombreUsuario.value);
+    formData.append('usuario[idPerfil]', inputs.idPerfil.value);
+    formData.append('usuario[strCorreo]', inputs.strCorreo.value);
+    formData.append('usuario[strNumeroCelular]', inputs.strNumeroCelular.value);
+    formData.append('usuario[idEstado_Usuario]', inputs.idEstado_Usuario.value);
+    
+    if (inputs.strPwd.value) {
+      formData.append('usuario[strPwd]', inputs.strPwd.value);
+    } else if (!id) {
+      alert("La contraseña es obligatoria para nuevos usuarios.");
+      return;
+    }
+
+    if (inputs.imagen_usuario.files[0]) {
+      formData.append('usuario[imagen_usuario]', inputs.imagen_usuario.files[0]);
+    }
+
+    try {
+      const res = await fetch(url, {
+        method: method,
+        body: formData // No se envían headers 'Content-Type', el navegador lo establece automáticamente para FormData
+      });
+
+      if (res.ok) {
+        limpiarFormulario();
+        cargarUsuarios(currentPage);
+      } else {
+        const err = await res.json();
+        alert('Error al guardar: ' + (err.errors ? err.errors.join(', ') : 'Verifica la información.'));
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  });
+
+  window.editarUsuario = async (id) => {
+    try {
+      const res = await fetch(`/usuarios/${id}.json`);
+      const u = await res.json();
+      
+      inputs.id.value = u.id;
+      inputs.strNombreUsuario.value = u.strNombreUsuario;
+      inputs.idPerfil.value = u.idPerfil;
+      inputs.strCorreo.value = u.strCorreo;
+      inputs.strNumeroCelular.value = u.strNumeroCelular || '';
+      inputs.idEstado_Usuario.value = u.idEstado_Usuario;
+      inputs.strPwd.value = ''; // Se deja en blanco para no sobreescribir si no se escribe nada
+      inputs.imagen_usuario.value = '';
+      
+      inputs.strPwd.placeholder = "Dejar en blanco para mantener";
+      btnCancelar.style.display = 'inline-block';
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  window.eliminarUsuario = async (id) => {
+    if (!confirm('¿Seguro que deseas eliminar este usuario?')) return;
+    try {
+      await fetch(`/usuarios/${id}.json`, { method: 'DELETE' });
+      cargarUsuarios(currentPage);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const limpiarFormulario = () => {
+    inputs.id.value = '';
+    inputs.strNombreUsuario.value = '';
+    inputs.idPerfil.value = '';
+    inputs.strPwd.value = '';
+    inputs.strCorreo.value = '';
+    inputs.strNumeroCelular.value = '';
+    inputs.idEstado_Usuario.value = '1';
+    inputs.imagen_usuario.value = '';
+    inputs.strPwd.placeholder = "Contraseña";
+    btnCancelar.style.display = 'none';
+  };
+
+  btnCancelar.addEventListener('click', limpiarFormulario);
+
+  cargarUsuarios();
+});
+</script>

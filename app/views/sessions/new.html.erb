@@ -1,0 +1,71 @@
+<div class="neo-container" style="max-width: 350px; width: 100%;">
+  <div class="neo-title">PetWorld Motors</div>
+  <div class="neo-subtitle">Tu tienda de Autos y Motos</div>
+
+  <div id="error-message" class="error-msg"></div>
+
+  <form id="login-form">
+    <input type="text" id="strNombreUsuario" class="neo-input" placeholder="Usuario" required>
+    <input type="password" id="strPwd" class="neo-input" placeholder="Contraseña" required>
+    
+    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+      <div class="g-recaptcha" data-sitekey="6LezwUQsAAAAAMpHyysHHMXLH-3_zu9JZcmCcW48"></div>
+    </div>
+
+    <button type="submit" class="neo-button">Ingresar</button>
+  </form>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('login-form');
+    const errorDiv = document.getElementById('error-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const recaptchaResponse = grecaptcha.getResponse();
+      
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = 'Por favor, verifica que no eres un robot.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      const strNombreUsuario = document.getElementById('strNombreUsuario').value;
+      const strPwd = document.getElementById('strPwd').value;
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            strNombreUsuario, 
+            strPwd,
+            recaptcha_response: recaptchaResponse 
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          localStorage.setItem('jwt_token', data.token);
+          window.location.href = data.redirect_url;
+        } else {
+          errorDiv.textContent = data.message;
+          errorDiv.style.display = 'block';
+          grecaptcha.reset(); 
+        }
+      } catch (error) {
+        errorDiv.textContent = 'Error de conexión con el servidor.';
+        errorDiv.style.display = 'block';
+        grecaptcha.reset();
+      }
+    });
+  });
+</script>
