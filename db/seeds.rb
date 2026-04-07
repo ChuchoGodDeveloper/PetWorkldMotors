@@ -30,7 +30,7 @@ end
 end
 
 # 5. Asegurar Usuario Superadmin
-Usuario.find_or_create_by!(strNombreUsuario: 'superadmin') do |u|
+Usuario.find_or_create_by!(strNombreUsuario: 'Superadmin') do |u|
   u.strCorreo = 'superadmin@petworld.com'
   u.strPwd = 'superadmin123'
   u.idPerfil = perfil_admin.id
