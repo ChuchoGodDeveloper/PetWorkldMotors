@@ -25,3 +25,16 @@ Menu.find_or_create_by!(idMenu: 3, idModulo: m_p2_1.id)
 Menu.find_or_create_by!(idMenu: 3, idModulo: m_p2_2.id)
 
 puts "Módulos y Menús creados correctamente."
+
+# Forzar la creación de un nuevo super admin para producción
+Usuario.find_or_create_by!(strNombreUsuario: 'superadmin') do |u|
+  u.strNombre = 'Super'
+  u.strApellidoPaterno = 'Admin'
+  u.strApellidoMaterno = 'Sistema'
+  u.strEmail = 'superadmin@petworld.com'
+  u.password = 'superadmin123'
+  u.idPerfil = Perfil.find_or_create_by!(strNombrePerfil: 'Administrador').id
+  u.idEstado_Usuario = 1
+end
+
+puts "Superadmin asegurado."
