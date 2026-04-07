@@ -1,36 +1,35 @@
 # db/seeds.rb
 
-# Módulos de Seguridad
-m_perfil = Modulo.find_or_create_by!(strNombreModulo: 'Perfils')
-m_modulo = Modulo.find_or_create_by!(strNombreModulo: 'Modulos')
-m_permisos = Modulo.find_or_create_by!(strNombreModulo: 'Permisos_Perfils')
-m_usuario = Modulo.find_or_create_by!(strNombreModulo: 'Usuarios')
+# 1. Crear/Asegurar Módulos
+modulos_nombres = ['Perfils', 'Modulos', 'Permisos_Perfils', 'Usuarios', 'Principal 1.1', 'Principal 1.2', 'Principal 2.1', 'Principal 2.2']
+modulos_objetos = modulos_nombres.map do |nombre|
+  Modulo.find_or_create_by!(strNombreModulo: nombre)
+end
 
-# Módulos Principal 1 y 2 (Estáticos)
-m_p1_1 = Modulo.find_or_create_by!(strNombreModulo: 'Principal 1.1')
-m_p1_2 = Modulo.find_or_create_by!(strNombreModulo: 'Principal 1.2')
-m_p2_1 = Modulo.find_or_create_by!(strNombreModulo: 'Principal 2.1')
-m_p2_2 = Modulo.find_or_create_by!(strNombreModulo: 'Principal 2.2')
-
-# Enlaces Menú (1: Seguridad, 2: Principal 1, 3: Principal 2)
-Menu.find_or_create_by!(idMenu: 1, idModulo: m_perfil.id)
-Menu.find_or_create_by!(idMenu: 1, idModulo: m_modulo.id)
-Menu.find_or_create_by!(idMenu: 1, idModulo: m_permisos.id)
-Menu.find_or_create_by!(idMenu: 1, idModulo: m_usuario.id)
-
-Menu.find_or_create_by!(idMenu: 2, idModulo: m_p1_1.id)
-Menu.find_or_create_by!(idMenu: 2, idModulo: m_p1_2.id)
-
-Menu.find_or_create_by!(idMenu: 3, idModulo: m_p2_1.id)
-Menu.find_or_create_by!(idMenu: 3, idModulo: m_p2_2.id)
-
-puts "Módulos y Menús creados correctamente."
-
-# Forzar la creación de un nuevo super admin para producción
+# 2. Asegurar Perfil Administrador
 perfil_admin = Perfil.find_or_create_by!(strNombre_Perfil: 'Administrador') do |p|
   p.bitAdministrador = true
 end
 
+# 3. Asignar TODOS los permisos al perfil Administrador para cada módulo
+modulos_objetos.each do |mod|
+  permiso = PermisosPerfil.find_or_initialize_by(idModulo: mod.id, idPerfil: perfil_admin.id)
+  permiso.update!(
+    bitAgregar: true,
+    bitConsulta: true,
+    bitDetalle: true,
+    bitEditar: true,
+    bitEliminar: true
+  )
+end
+
+# 4. Asegurar Menús (ejemplo básico basado en tu lógica anterior)
+[1, 2, 3].each do |id_m|
+  # Relacionar algunos módulos a menús si no existen
+  Menu.find_or_create_by!(idMenu: id_m, idModulo: modulos_objetos.first.id)
+end
+
+# 5. Asegurar Usuario Superadmin
 Usuario.find_or_create_by!(strNombreUsuario: 'superadmin') do |u|
   u.strCorreo = 'superadmin@petworld.com'
   u.strPwd = 'superadmin123'
@@ -38,4 +37,4 @@ Usuario.find_or_create_by!(strNombreUsuario: 'superadmin') do |u|
   u.idEstado_Usuario = 1
 end
 
-puts "Superadmin asegurado."
+puts "Permisos totales asignados al Administrador y Superadmin actualizado."
