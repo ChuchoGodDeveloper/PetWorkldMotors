@@ -1,164 +1,64 @@
-<div class="neo-container" style="width: 800px; max-width: 90%;">
-  <div style="text-align: left; font-size: 12px; color: #888; margin-bottom: 20px;">
-    <a href="/principal" style="color: #888; text-decoration: none;">Inicio</a> > Seguridad > Perfiles
+<div class="neo-container" style="width: 100%; max-width: 1200px;">
+  
+  <div style="background-color: #1a2b4c; color: white; padding: 15px 20px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e0e6ed; border-bottom: none;">
+    <h2 style="margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+      <i class="fas fa-id-badge"></i> Gestión de Perfiles
+    </h2>
+    <%= link_to new_perfil_path, class: "neo-button", style: "padding: 8px 15px; font-size: 0.9rem; background: transparent; border: 1px solid white; color: white; margin: 0;" do %>
+      <i class="fas fa-plus"></i> Nuevo Perfil
+    <% end %>
   </div>
 
-  <div class="neo-title">Módulo Perfil</div>
-
-  <form id="form-perfil" style="margin-bottom: 30px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-    <input type="hidden" id="perfil-id">
-    <input type="text" id="strNombre_Perfil" class="neo-input" style="margin-bottom: 0; flex: 1;" placeholder="Nombre del Perfil" required>
+  <div style="border: 2px solid #e0e6ed; border-radius: 0 0 12px 12px; padding: 20px; background-color: white;">
     
-    <label style="color: #666; font-size: 14px; display: flex; align-items: center; gap: 5px;">
-      <input type="checkbox" id="bitAdministrador"> Administrador
-    </label>
-
-    <button type="submit" class="neo-button" style="width: auto; padding: 10px 20px;" id="btn-guardar">Guardar</button>
-    <button type="button" class="neo-button" style="width: auto; padding: 10px 20px; display: none;" id="btn-cancelar">Cancelar</button>
-  </form>
-
-  <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a;">
-    <thead>
-      <tr style="border-bottom: 2px solid #c9d0dabc;">
-        <th style="padding: 10px;">ID</th>
-        <th style="padding: 10px;">Nombre</th>
-        <th style="padding: 10px;">Admin</th>
-        <th style="padding: 10px; text-align: center;">Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-perfiles">
-      </tbody>
-  </table>
-
-  <div id="paginacion" style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+    <div style="margin-bottom: 20px;">
+      <label style="font-weight: bold; font-size: 0.9rem; color: #1a2b4c; display: block; margin-bottom: 8px;">BUSCAR POR NOMBRE</label>
+      <%= form_with url: perfils_path, method: :get, local: true, style: "display: flex; gap: 10px;" do |f| %>
+        <%= f.text_field :q, value: params[:q], placeholder: "Nombre del perfil...", class: "neo-input", style: "flex-grow: 1; margin: 0;" %>
+        <%= f.submit "Buscar", class: "neo-button", style: "margin: 0; background-color: #1a2b4c; color: white;" %>
+      <% end %>
     </div>
+
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+      <thead>
+        <tr style="background-color: #1a2b4c; color: white;">
+          <th style="padding: 12px 15px; border-radius: 8px 0 0 8px; width: 50px;">#</th>
+          <th style="padding: 12px 15px;">NOMBRE DEL PERFIL</th>
+          <th style="padding: 12px 15px; text-align: center; width: 150px;">ADMINISTRADOR</th>
+          <th style="padding: 12px 15px; text-align: center; border-radius: 0 8px 8px 0; width: 150px;">ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @perfils.each do |perfil| %>
+          <tr style="border-bottom: 1px solid #f0f0f0;">
+            <td style="padding: 15px; color: #666;"><%= perfil.id %></td>
+            <td style="padding: 15px; font-weight: bold; color: #333;"><%= perfil.strNombre_Perfil %></td>
+            <td style="padding: 15px; text-align: center;">
+              <% if perfil.bitAdministrador %>
+                <span style="background-color: #1a2b4c; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                  <i class="fas fa-shield-alt"></i> SÍ
+                </span>
+              <% else %>
+                <span style="background-color: #f0f0f0; color: #666; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                  NO
+                </span>
+              <% end %>
+            </td>
+            <td style="padding: 15px; text-align: center;">
+              <div style="display: flex; gap: 8px; justify-content: center;">
+                <%= link_to edit_perfil_path(perfil), class: "neo-button", style: "padding: 5px 10px; margin: 0; background-color: white; border: 1px solid #ccc; color: #1a2b4c;" do %>
+                  <i class="fas fa-pencil-alt"></i>
+                <% end %>
+                <%= button_to perfil_path(perfil), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button", style: "padding: 5px 10px; margin: 0; background-color: white; border: 1px solid #ff4d4f; color: #ff4d4f;" do %>
+                  <i class="fas fa-trash-alt"></i>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('jwt_token');
-  if (!token) window.location.replace('/login');
-
-  const tabla = document.getElementById('tabla-perfiles');
-  const form = document.getElementById('form-perfil');
-  const paginacion = document.getElementById('paginacion');
-  const btnCancelar = document.getElementById('btn-cancelar');
-  const inputId = document.getElementById('perfil-id');
-  const inputNombre = document.getElementById('strNombre_Perfil');
-  const inputAdmin = document.getElementById('bitAdministrador');
-
-  let currentPage = 1;
-
-  // Cargar Perfiles (Consultar y Paginado)
-  const cargarPerfiles = async (page = 1) => {
-    try {
-      const res = await fetch(`/perfils.json?page=${page}`);
-      const json = await res.json();
-      
-      tabla.innerHTML = '';
-      json.data.forEach(perfil => {
-        const tr = document.createElement('tr');
-        tr.style.borderBottom = '1px solid #c9d0dabc';
-        tr.innerHTML = `
-          <td style="padding: 10px;">${perfil.id}</td>
-          <td style="padding: 10px;">${perfil.strNombre_Perfil}</td>
-          <td style="padding: 10px;">${perfil.bitAdministrador ? 'Sí' : 'No'}</td>
-          <td style="padding: 10px; text-align: center;">
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarPerfil(${perfil.id})">Editar</button>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarPerfil(${perfil.id})">Eliminar</button>
-          </td>
-        `;
-        tabla.appendChild(tr);
-      });
-
-      renderizarPaginacion(json.meta.current_page, json.meta.total_pages);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  // Paginación
-  const renderizarPaginacion = (current, total) => {
-    paginacion.innerHTML = '';
-    for (let i = 1; i <= total; i++) {
-      const btn = document.createElement('button');
-      btn.textContent = i;
-      btn.className = 'neo-button';
-      btn.style.width = '40px';
-      btn.style.padding = '10px';
-      if (i === current) btn.style.boxShadow = 'inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8)';
-      btn.onclick = () => { currentPage = i; cargarPerfiles(currentPage); };
-      paginacion.appendChild(btn);
-    }
-  };
-
-  // Crear o Editar
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = inputId.value;
-    const url = id ? `/perfils/${id}.json` : '/perfils.json';
-    const method = id ? 'PUT' : 'POST';
-
-    const payload = {
-      perfil: {
-        strNombre_Perfil: inputNombre.value,
-        bitAdministrador: inputAdmin.checked
-      }
-    };
-
-    try {
-      const res = await fetch(url, {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok) {
-        limpiarFormulario();
-        cargarPerfiles(currentPage);
-      } else {
-        alert('Error al guardar. Verifica que el nombre no esté duplicado.');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  });
-
-  // Funciones globales para botones generados dinámicamente
-  window.editarPerfil = async (id) => {
-    try {
-      const res = await fetch(`/perfils/${id}.json`);
-      const perfil = await res.json();
-      inputId.value = perfil.id;
-      inputNombre.value = perfil.strNombre_Perfil;
-      inputAdmin.checked = perfil.bitAdministrador;
-      btnCancelar.style.display = 'inline-block';
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  window.eliminarPerfil = async (id) => {
-    if (!confirm('¿Seguro que deseas eliminar este perfil?')) return;
-    try {
-      await fetch(`/perfils/${id}.json`, { method: 'DELETE' });
-      cargarPerfiles(currentPage);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  // Limpiar
-  const limpiarFormulario = () => {
-    inputId.value = '';
-    inputNombre.value = '';
-    inputAdmin.checked = false;
-    btnCancelar.style.display = 'none';
-  };
-
-  btnCancelar.addEventListener('click', limpiarFormulario);
-
-  // Init
-  cargarPerfiles();
-});
-</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">

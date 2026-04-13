@@ -1,0 +1,49 @@
+<div class="neo-container" style="width: 100%; max-width: 600px; padding: 0;">
+  
+  <div style="background-color: #1a2b4c; color: white; padding: 15px 20px; border-radius: 12px 12px 0 0;">
+    <h2 style="margin: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+      <i class="fas fa-plus-circle"></i> <%= @perfil.new_record? ? 'Nuevo Perfil' : 'Editar Perfil' %>
+    </h2>
+  </div>
+
+  <div style="border: 2px solid #e0e6ed; border-top: none; border-radius: 0 0 12px 12px; padding: 30px; background-color: white;">
+    <%= form_with(model: @perfil, local: true) do |form| %>
+      
+      <% if @perfil.errors.any? %>
+        <div style="color: #ff4d4f; margin-bottom: 20px; padding: 10px; border: 1px solid #ff4d4f; border-radius: 8px;">
+          <ul style="margin: 0; padding-left: 20px;">
+            <% @perfil.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div style="margin-bottom: 25px;">
+        <%= form.label :strNombre_Perfil, "NOMBRE DEL PERFIL *", style: "font-weight: bold; font-size: 0.9rem; color: #1a2b4c; display: block; margin-bottom: 8px;" %>
+        <%= form.text_field :strNombre_Perfil, class: "neo-input", style: "margin: 0; width: 100%; box-sizing: border-box;", required: true %>
+      </div>
+
+      <div style="margin-bottom: 30px; display: flex; align-items: flex-start; gap: 15px;">
+        <div style="padding-top: 2px;">
+          <%= form.check_box :bitAdministrador, style: "width: 20px; height: 20px; cursor: pointer;" %>
+        </div>
+        <div>
+          <label for="perfil_bitAdministrador" style="font-weight: bold; font-size: 1.1rem; color: #1a2b4c; cursor: pointer; display: block; margin-bottom: 4px;">Perfil Administrador</label>
+          <span style="color: #888; font-size: 0.9rem;">Los administradores tienen acceso completo al sistema.</span>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 15px;">
+        <%= form.button style: "background-color: #1a2b4c; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;" do %>
+          <i class="fas fa-save"></i> Guardar Perfil
+        <% end %>
+        
+        <%= link_to perfils_path, style: "background-color: white; color: #1a2b4c; border: 1px solid #1a2b4c; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px;" do %>
+          <i class="fas fa-arrow-left"></i> Cancelar
+        <% end %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
