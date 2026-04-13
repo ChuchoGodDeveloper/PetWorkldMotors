@@ -67,3 +67,44 @@ body {
 .submenu { display: none; flex-direction: column; padding-left: 15px; margin-bottom: 15px; }
 .submenu a { text-decoration: none; color: #666; padding: 8px 0; font-size: 14px; display: block; transition: 0.2s; }
 .submenu a:hover { color: #333; font-weight: bold; padding-left: 5px; }
+
+/* Paginación Neomórfica (Kaminari) */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 0;
+}
+
+/* Estilo para los botones (enlaces) y la página actual */
+.pagination > span > a,
+.pagination > span.current,
+.pagination > span.gap {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  min-width: 20px;
+  padding: 0 15px;
+  border-radius: 10px;
+  background-color: #e0e5ec;
+  color: #4a4a4a;
+  text-decoration: none;
+  font-weight: bold;
+  box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Efecto al hacer clic en un enlace de página */
+.pagination > span > a:active {
+  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.7), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Estilo para la página seleccionada (se ve hundida) */
+.pagination > span.current {
+  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.7), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
+  color: #333;
+}
