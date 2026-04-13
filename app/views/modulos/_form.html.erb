@@ -1,0 +1,29 @@
+<div class="neo-container" style="max-width: 600px; margin: 0 auto;">
+  
+  <h2 class="neo-title"><%= @modulo.new_record? ? 'Nuevo Módulo' : 'Editar Módulo' %></h2>
+
+  <%= form_with(model: @modulo, local: true, style: "text-align: left; margin-top: 30px;") do |form| %>
+    
+    <% if @modulo.errors.any? %>
+      <div class="error-msg" style="display: block;">
+        <ul style="margin: 0; padding-left: 20px;">
+          <% @modulo.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div style="margin-bottom: 25px;">
+      <%= form.label :strNombreModulo, "NOMBRE DEL MÓDULO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+      <%= form.text_field :strNombreModulo, placeholder: "Ej: Clientes, Reportes...", class: "neo-input", required: true, style: "margin-bottom: 5px;" %>
+      <span class="neo-subtitle" style="display: block; color: #ff4757;">Obligatorio. Aparece en el sidebar.</span>
+    </div>
+
+    <div style="display: flex; gap: 15px; margin-top: 30px;">
+      <%= form.submit "Guardar Módulo", class: "neo-button" %>
+      <%= link_to "Cancelar", modulos_path, class: "neo-button", style: "text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;" %>
+    </div>
+
+  <% end %>
+</div>
