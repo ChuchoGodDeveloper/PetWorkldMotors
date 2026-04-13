@@ -2,25 +2,20 @@ class UsuariosController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    @usuarios = Usuario.includes(:perfil).page(params[:page]).per(5)
+    # Usamos includes(:perfil) para evitar consultas N+1 en la tabla
+    @usuarios = Usuario.includes(:perfil)
     
-    usuarios_data = @usuarios.map do |u|
-      {
-        id: u.id,
-        strNombreUsuario: u.strNombreUsuario,
-        perfil: u.perfil ? u.perfil.strNombre_Perfil : '',
-        estado: u.idEstado_Usuario == 1 ? 'Activo' : 'Inactivo',
-        strCorreo: u.strCorreo,
-        strNumeroCelular: u.strNumeroCelular,
-        imagen_url: u.imagen_usuario.attached? ? url_for(u.imagen_usuario) : nil
-      }
+    if params[:q].present?
+      @usuarios = @usuarios.where(Usuario.arel_table[:strNombreUsuario].matches("%#{params[:q]}%"))
     end
-
+    
+    @usuarios = @usuarios.page(params[:page]).per(5)
+    
     respond_to do |format|
       format.html
       format.json { 
         render json: { 
-          data: usuarios_data, 
+          data: @usuarios, 
           meta: { current_page: @usuarios.current_page, total_pages: @usuarios.total_pages } 
         } 
       }
@@ -29,46 +24,62 @@ class UsuariosController < ApplicationController
 
   def show
     @usuario = Usuario.find(params[:id])
-    render json: {
-      id: @usuario.id,
-      strNombreUsuario: @usuario.strNombreUsuario,
-      idPerfil: @usuario.idPerfil,
-      idEstado_Usuario: @usuario.idEstado_Usuario,
-      strCorreo: @usuario.strCorreo,
-      strNumeroCelular: @usuario.strNumeroCelular
-    }
+    render json: @usuario
+  end
+
+  def new
+    @usuario = Usuario.new
+  end
+
+  def edit
+    @usuario = Usuario.find(params[:id])
   end
 
   def create
     @usuario = Usuario.new(usuario_params)
-    if @usuario.save
-      render json: { success: true }, status: :created
-    else
-      render json: { success: false, errors: @usuario.errors.full_messages }, status: :unprocessable_entity
+    
+    respond_to do |format|
+      if @usuario.save
+        format.html { redirect_to usuarios_path, notice: 'Usuario creado exitosamente.' }
+        format.json { render json: { success: true, usuario: @usuario }, status: :created }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { success: false, errors: @usuario.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def update
     @usuario = Usuario.find(params[:id])
-    upd_params = usuario_params
-    upd_params.delete(:strPwd) if upd_params[:strPwd].blank?
-
-    if @usuario.update(upd_params)
-      render json: { success: true }
-    else
-      render json: { success: false, errors: @usuario.errors.full_messages }, status: :unprocessable_entity
+    
+    # Evitar guardar contraseña en blanco si no la quieren cambiar al editar
+    p = usuario_params
+    p.delete(:strPwd) if p[:strPwd].blank?
+    
+    respond_to do |format|
+      if @usuario.update(p)
+        format.html { redirect_to usuarios_path, notice: 'Usuario actualizado exitosamente.' }
+        format.json { render json: { success: true, usuario: @usuario } }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { success: false, errors: @usuario.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @usuario = Usuario.find(params[:id])
     @usuario.destroy
-    render json: { success: true }
+    
+    respond_to do |format|
+      format.html { redirect_to usuarios_path, notice: 'Usuario eliminado exitosamente.' }
+      format.json { render json: { success: true } }
+    end
   end
 
   private
 
   def usuario_params
-    params.require(:usuario).permit(:strNombreUsuario, :idPerfil, :strPwd, :idEstado_Usuario, :strCorreo, :strNumeroCelular, :imagen_usuario)
+    params.require(:usuario).permit(:strNombreUsuario, :idPerfil, :strPwd, :strCorreo, :strNumeroCelular, :idEstado_Usuario, :imagen_usuario)
   end
 end
