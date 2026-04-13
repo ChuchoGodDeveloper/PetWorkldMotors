@@ -1,55 +1,56 @@
 class PerfilsController < ApplicationController
-  before_action :require_login
-  before_action :set_perfil, only: [:show, :edit, :update, :destroy]
+  skip_before_action :verify_authenticity_token # Permitir peticiones Fetch
 
   def index
     if params[:q].present?
-      @perfils = Perfil.where("strNombre_Perfil ILIKE ?", "%#{params[:q]}%")
+      @perfils = Perfil.where("strNombre_Perfil ILIKE ?", "%#{params[:q]}%").page(params[:page]).per(5)
     else
-      @perfils = Perfil.all
+      @perfils = Perfil.page(params[:page]).per(5)
+    end
+    
+    respond_to do |format|
+      format.html # Renderiza index.html.erb
+      format.json { 
+        render json: { 
+          data: @perfils, 
+          meta: { current_page: @perfils.current_page, total_pages: @perfils.total_pages } 
+        } 
+      }
     end
   end
 
   def show
-  end
-
-  def new
-    @perfil = Perfil.new
+    @perfil = Perfil.find(params[:id])
+    render json: @perfil
   end
 
   def create
     @perfil = Perfil.new(perfil_params)
     if @perfil.save
-      redirect_to perfils_path, notice: 'Perfil creado exitosamente.'
+      render json: { success: true, perfil: @perfil }, status: :created
     else
-      render :new, status: :unprocessable_entity
+      render json: { success: false, errors: @perfil.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  def edit
-  end
-
   def update
+    @perfil = Perfil.find(params[:id])
     if @perfil.update(perfil_params)
-      redirect_to perfils_path, notice: 'Perfil actualizado exitosamente.'
+      render json: { success: true, perfil: @perfil }
     else
-      render :edit, status: :unprocessable_entity
+      render json: { success: false, errors: @perfil.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def destroy
+    @perfil = Perfil.find(params[:id])
     @perfil.destroy
-    redirect_to perfils_path, notice: 'Perfil eliminado exitosamente.'
+    render json: { success: true }
   end
 
   private
 
-  def set_perfil
-    @perfil = Perfil.find(params[:id])
-  end
-
   def perfil_params
-    # Asegúrate de permitir los parámetros correctos según tu schema
     params.require(:perfil).permit(:strNombre_Perfil, :bitAdministrador)
   end
 end
