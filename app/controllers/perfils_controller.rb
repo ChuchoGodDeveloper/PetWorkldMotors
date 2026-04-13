@@ -24,28 +24,52 @@ class PerfilsController < ApplicationController
     render json: @perfil
   end
 
+  # --- MÉTODOS PARA RENDERIZAR EL FORMULARIO HTML ---
+  def new
+    @perfil = Perfil.new
+  end
+
+  def edit
+    @perfil = Perfil.find(params[:id])
+  end
+
+  # --- MÉTODOS ADAPTADOS PARA HTML Y JSON ---
   def create
     @perfil = Perfil.new(perfil_params)
-    if @perfil.save
-      render json: { success: true, perfil: @perfil }, status: :created
-    else
-      render json: { success: false, errors: @perfil.errors.full_messages }, status: :unprocessable_entity
+    
+    respond_to do |format|
+      if @perfil.save
+        format.html { redirect_to perfils_path, notice: 'Perfil creado exitosamente.' }
+        format.json { render json: { success: true, perfil: @perfil }, status: :created }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { success: false, errors: @perfil.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def update
     @perfil = Perfil.find(params[:id])
-    if @perfil.update(perfil_params)
-      render json: { success: true, perfil: @perfil }
-    else
-      render json: { success: false, errors: @perfil.errors.full_messages }, status: :unprocessable_entity
+    
+    respond_to do |format|
+      if @perfil.update(perfil_params)
+        format.html { redirect_to perfils_path, notice: 'Perfil actualizado exitosamente.' }
+        format.json { render json: { success: true, perfil: @perfil } }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { success: false, errors: @perfil.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @perfil = Perfil.find(params[:id])
     @perfil.destroy
-    render json: { success: true }
+    
+    respond_to do |format|
+      format.html { redirect_to perfils_path, notice: 'Perfil eliminado exitosamente.' }
+      format.json { render json: { success: true } }
+    end
   end
 
   private
