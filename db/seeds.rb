@@ -38,3 +38,11 @@ Usuario.find_or_create_by!(strNombreUsuario: 'Superadmin') do |u|
 end
 
 puts "Permisos totales asignados al Administrador y Superadmin actualizado."
+
+# Limpieza de relaciones incorrectas en el menú
+modulo_perfil = Modulo.find_by(strNombreModulo: 'Perfils')
+
+if modulo_perfil
+  Menu.where(idModulo: modulo_perfil.id, idMenu: [2, 3]).destroy_all
+  puts "Módulo Perfils removido de los menús Principal 1 y Principal 2."
+end
