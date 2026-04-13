@@ -1,9 +1,10 @@
 class PerfilsController < ApplicationController
   skip_before_action :verify_authenticity_token # Permitir peticiones Fetch
 
-  def index
+def index
     if params[:q].present?
-      @perfils = Perfil.where("strNombre_Perfil ILIKE ?", "%#{params[:q]}%").page(params[:page]).per(5)
+      # arel_table maneja automáticamente las comillas exactas que exige PostgreSQL
+      @perfils = Perfil.where(Perfil.arel_table[:strNombre_Perfil].matches("%#{params[:q]}%")).page(params[:page]).per(5)
     else
       @perfils = Perfil.page(params[:page]).per(5)
     end
