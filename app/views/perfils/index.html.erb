@@ -1,107 +1,47 @@
-<style>
-  /* Estilos Neomórficos basados en tu diseño original */
-  .neo-bg {
-    background-color: #e9eff5;
-    color: #4a5568;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
-    border-radius: 15px;
-  }
-  .neo-outset {
-    background: #e9eff5;
-    box-shadow: 6px 6px 12px #c5cbd1, -6px -6px 12px #ffffff;
-    border-radius: 12px;
-  }
-  .neo-inset {
-    background: #e9eff5;
-    box-shadow: inset 4px 4px 8px #c5cbd1, inset -4px -4px 8px #ffffff;
-    border-radius: 12px;
-    border: none;
-    outline: none;
-  }
-  .neo-button {
-    background: #e9eff5;
-    box-shadow: 4px 4px 8px #c5cbd1, -4px -4px 8px #ffffff;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-    padding: 8px 16px;
-    font-weight: 600;
-    color: #2d3748;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-  }
-  .neo-button:active {
-    box-shadow: inset 4px 4px 8px #c5cbd1, inset -4px -4px 8px #ffffff;
-  }
-  .neo-button-danger {
-    color: #e53e3e;
-  }
-</style>
-
-<div class="neo-bg" style="max-width: 1000px; margin: 0 auto;">
+<div class="neo-container">
   
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2 style="margin: 0; font-size: 1.5rem; color: #2d3748;">
-      Gestión de Perfiles
-    </h2>
-    <%= link_to new_perfil_path, class: "neo-button" do %>
-      + Nuevo Perfil
-    <% end %>
+    <h2 class="neo-title" style="margin: 0;">Gestión de Perfiles</h2>
+    <%= link_to 'Nuevo Perfil', new_perfil_path, class: "neo-button", style: "width: auto; padding: 10px 20px; text-decoration: none;" %>
   </div>
 
-  <div class="neo-outset" style="padding: 20px; margin-bottom: 30px;">
-    <label style="font-weight: bold; font-size: 0.85rem; color: #4a5568; display: block; margin-bottom: 10px; text-transform: uppercase;">
-      Buscar por nombre
-    </label>
+  <div style="margin-bottom: 30px; text-align: left;">
+    <label class="neo-subtitle" style="display: block; margin-bottom: 10px; font-weight: bold;">BUSCAR POR NOMBRE</label>
     <%= form_with url: perfils_path, method: :get, local: true, style: "display: flex; gap: 15px;" do |f| %>
-      <%= f.text_field :q, value: params[:q], placeholder: "Nombre del perfil...", class: "neo-inset", style: "flex-grow: 1; padding: 12px 20px; color: #4a5568;" %>
-      <%= f.submit "Buscar", class: "neo-button", style: "padding: 12px 25px;" %>
+      <%= f.text_field :q, value: params[:q], placeholder: "Nombre del perfil...", class: "neo-input", style: "margin: 0; flex-grow: 1;" %>
+      <%= f.submit "Buscar", class: "neo-button", style: "width: auto; padding: 10px 30px; margin: 0;" %>
     <% end %>
   </div>
 
-  <div class="neo-outset" style="padding: 20px;">
-    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-      <thead>
-        <tr style="border-bottom: 2px solid #d1d8e0;">
-          <th style="padding: 15px 10px; color: #2d3748;">#</th>
-          <th style="padding: 15px 10px; color: #2d3748;">NOMBRE DEL PERFIL</th>
-          <th style="padding: 15px 10px; text-align: center; color: #2d3748;">ADMINISTRADOR</th>
-          <th style="padding: 15px 10px; text-align: center; color: #2d3748;">ACCIONES</th>
+  <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+      <tr style="border-bottom: 2px solid rgba(163,177,198,0.6);">
+        <th style="padding: 15px 10px; color: #333;">#</th>
+        <th style="padding: 15px 10px; color: #333;">NOMBRE DEL PERFIL</th>
+        <th style="padding: 15px 10px; text-align: center; color: #333;">ADMINISTRADOR</th>
+        <th style="padding: 15px 10px; text-align: center; color: #333;">ACCIONES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @perfils.each do |perfil| %>
+        <tr style="border-bottom: 1px solid rgba(163,177,198,0.3);">
+          <td style="padding: 15px 10px; color: #666;"><%= perfil.id %></td>
+          <td style="padding: 15px 10px; font-weight: bold; color: #4a4a4a;"><%= perfil.strNombre_Perfil %></td>
+          <td style="padding: 15px 10px; text-align: center; color: #666;">
+            <%= perfil.bitAdministrador ? 'Sí' : 'No' %>
+          </td>
+          <td style="padding: 15px 10px; text-align: center;">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+              <%= link_to 'Editar', edit_perfil_path(perfil), class: "neo-button", style: "width: auto; padding: 8px 15px; text-decoration: none;" %>
+              <%= button_to 'Eliminar', perfil_path(perfil), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button", style: "width: auto; padding: 8px 15px; color: #ff4757;" %>
+            </div>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <% @perfils.each do |perfil| %>
-          <tr style="border-bottom: 1px solid #d1d8e0;">
-            <td style="padding: 15px 10px; color: #718096;"><%= perfil.id %></td>
-            <td style="padding: 15px 10px; font-weight: 600; color: #4a5568;"><%= perfil.strNombre_Perfil %></td>
-            <td style="padding: 15px 10px; text-align: center;">
-              <% if perfil.bitAdministrador %>
-                <span class="neo-inset" style="padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: #2b6cb0;">
-                  SÍ
-                </span>
-              <% else %>
-                <span style="padding: 6px 15px; font-size: 0.85rem; font-weight: bold; color: #a0aec0;">
-                  NO
-                </span>
-              <% end %>
-            </td>
-            <td style="padding: 15px 10px; text-align: center;">
-              <div style="display: flex; gap: 10px; justify-content: center;">
-                <%= link_to 'Editar', edit_perfil_path(perfil), class: "neo-button" %>
-                <%= button_to 'Eliminar', perfil_path(perfil), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button neo-button-danger" %>
-              </div>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+      <% end %>
+    </tbody>
+  </table>
 
-    <div style="margin-top: 20px; text-align: center;">
-      <%= paginate @perfils if defined?(paginate) %>
-    </div>
+  <div style="margin-top: 20px;">
+    <%= paginate @perfils if defined?(paginate) %>
   </div>
 </div>
