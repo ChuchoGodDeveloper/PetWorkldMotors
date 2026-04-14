@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   
   get '/principal', to: 'home#index', as: 'principal'
   get '/menu_dinamico', to: 'menus#dinamico'
+  get '/api/perfil', to: 'usuarios#perfil_actual'
   
   # Pantallas Estáticas con guiones medios
   get '/principal-1-1', to: 'principals#p1_1'
