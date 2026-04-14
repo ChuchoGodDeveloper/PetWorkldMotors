@@ -1,5 +1,39 @@
-<div class="neo-container" style="max-width: 600px;">
-  <div class="neo-title">PetWorld Motors</div>
-  <div class="neo-subtitle">Panel de Administración</div>
-  <p style="color: #666;">Selecciona un módulo del menú lateral izquierdo para comenzar a trabajar.</p>
+<div class="neo-container" style="max-width: 650px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+
+  <h2 class="neo-title" style="margin-bottom: 10px;">¡Bienvenido a PetWorld Motors!</h2>
+
+  <div style="width: 100%; padding: 40px; border-radius: 20px; box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8); display: flex; align-items: center; gap: 40px; box-sizing: border-box;">
+
+    <div style="flex-shrink: 0;">
+      <% if current_usuario&.imagen_usuario&.attached? %>
+        <%= image_tag current_usuario.imagen_usuario, style: "width: 130px; height: 130px; border-radius: 50%; object-fit: cover; box-shadow: 6px 6px 10px 0 rgba(163, 177, 198, 0.7), -6px -6px 10px 0 rgba(255, 255, 255, 0.8); border: 5px solid #e0e5ec;" %>
+      <% else %>
+        <div style="width: 130px; height: 130px; border-radius: 50%; background-color: #e0e5ec; box-shadow: 6px 6px 10px 0 rgba(163, 177, 198, 0.7), -6px -6px 10px 0 rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; border: 5px solid #e0e5ec;">
+          <span style="font-size: 3rem; color: #a3b1c6; font-weight: bold;">?</span>
+        </div>
+      <% end %>
+    </div>
+
+    <div style="text-align: left; width: 100%;">
+      <h3 style="margin: 0 0 15px 0; color: #333; font-size: 1.6rem;"><%= current_usuario&.strNombreUsuario || 'Usuario' %></h3>
+      
+      <div style="margin-bottom: 8px; color: #666; font-size: 1rem; display: flex; align-items: center; gap: 10px;">
+        <strong style="color: #4a4a4a; width: 60px;">Perfil:</strong> 
+        <span class="neo-input" style="padding: 8px 15px; margin: 0; width: auto; display: inline-block; flex-grow: 1;"><%= current_usuario&.perfil&.strNombre_Perfil || 'N/A' %></span>
+      </div>
+      
+      <div style="margin-bottom: 8px; color: #666; font-size: 1rem; display: flex; align-items: center; gap: 10px;">
+        <strong style="color: #4a4a4a; width: 60px;">Correo:</strong> 
+        <span class="neo-input" style="padding: 8px 15px; margin: 0; width: auto; display: inline-block; flex-grow: 1;"><%= current_usuario&.strCorreo || 'N/A' %></span>
+      </div>
+      
+      <div style="margin-bottom: 0; color: #666; font-size: 1rem; display: flex; align-items: center; gap: 10px;">
+        <strong style="color: #4a4a4a; width: 60px;">Celular:</strong> 
+        <span class="neo-input" style="padding: 8px 15px; margin: 0; width: auto; display: inline-block; flex-grow: 1;"><%= current_usuario&.strNumeroCelular.present? ? current_usuario.strNumeroCelular : 'No registrado' %></span>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="neo-subtitle" style="margin-top: 20px;">Selecciona un módulo del menú lateral izquierdo para comenzar a trabajar.</p>
 </div>
