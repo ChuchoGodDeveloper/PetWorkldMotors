@@ -1,120 +1,60 @@
-class UsuariosController < ApplicationController
-  skip_before_action :verify_authenticity_token
+<div class="neo-container" style="max-width: 800px; margin: 0 auto;">
+  
+  <h2 class="neo-title"><%= usuario.new_record? ? 'Nuevo Usuario' : 'Editar Usuario' %></h2>
 
-  # --- NUEVO MÉTODO AISLADO PARA LA VISTA HOME ---
-  def perfil_actual
-    auth_header = request.headers['Authorization']
-    token = auth_header.split(' ').last if auth_header.present?
+  <%= form_with(model: usuario, local: true, style: "text-align: left; margin-top: 30px;") do |form| %>
     
-    if token.present?
-      begin
-        decoded_token = JWT.decode(token, Rails.application.secret_key_base, true, { algorithm: 'HS256' })
-        usuario_id = decoded_token.first['usuario_id']
-        
-        usuario = Usuario.includes(:perfil).find_by(id: usuario_id)
-        
-        if usuario
-          render json: {
-            success: true,
-            nombre: usuario.strNombreUsuario,
-            correo: usuario.strCorreo,
-            celular: usuario.strNumeroCelular.present? ? usuario.strNumeroCelular : 'No registrado',
-            perfil: usuario.perfil&.strNombre_Perfil || 'Sin perfil asignado',
-            estado: usuario.idEstado_Usuario == 1 ? 'Activo' : 'Inactivo',
-            imagen_url: usuario.imagen_usuario.attached? ? url_for(usuario.imagen_usuario) : nil
-          }, status: :ok
-        else
-          render json: { success: false, message: 'Usuario no encontrado.' }, status: :not_found
-        end
+    <% if usuario.errors.any? %>
+      <div class="error-msg" style="display: block; color: red; margin-bottom: 20px;">
+        <ul style="margin: 0; padding-left: 20px;">
+          <% usuario.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-      rescue StandardError => e
-        render json: { success: false, message: 'Token inválido o expirado.' }, status: :unauthorized
-      end
-    else
-      render json: { success: false, message: 'Falta el token.' }, status: :unauthorized
-    end
-  end
-  # -----------------------------------------------
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+      <div>
+        <%= form.label :strNombreUsuario, "Usuario *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+        <%= form.text_field :strNombreUsuario, class: "neo-input", required: true, style: "margin: 0;" %>
+      </div>
+      <div>
+        <%= form.label :idPerfil, "Perfil *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione Perfil..." }, { class: "neo-input", required: true, style: "margin: 0; appearance: auto;" } %>
+      </div>
+      <div>
+        <%= form.label :strPwd, "Contraseña #{'*' if usuario.new_record?}", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+        <%= form.password_field :strPwd, class: "neo-input", placeholder: "********", required: usuario.new_record?, style: "margin: 0;" %>
+      </div>
+    </div>
 
-  def index
-    # Usamos includes(:perfil) para evitar consultas N+1 en la tabla
-    @usuarios = Usuario.includes(:perfil)
-    
-    if params[:q].present?
-      @usuarios = @usuarios.where(Usuario.arel_table[:strNombreUsuario].matches("%#{params[:q]}%"))
-    end
-    
-    @usuarios = @usuarios.page(params[:page]).per(5)
-    
-    respond_to do |format|
-      format.html
-      format.json { 
-        render json: { 
-          data: @usuarios, 
-          meta: { current_page: @usuarios.current_page, total_pages: @usuarios.total_pages } 
-        } 
-      }
-    end
-  end
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+      <div>
+        <%= form.label :strCorreo, "Correo Electrónico *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+        <%= form.email_field :strCorreo, class: "neo-input", required: true, style: "margin: 0;" %>
+      </div>
+      <div>
+        <%= form.label :strNumeroCelular, "Número Celular", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+        <%= form.text_field :strNumeroCelular, class: "neo-input", style: "margin: 0;" %>
+      </div>
+      <div>
+        <%= form.label :idEstado_Usuario, "Estado", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 0]], {}, { class: "neo-input", style: "margin: 0; appearance: auto;" } %>
+      </div>
+    </div>
 
-  def show
-    @usuario = Usuario.find(params[:id])
-    render json: @usuario
-  end
+    <div style="margin-bottom: 30px;">
+      <%= form.label :imagen_usuario, "Imagen de Perfil", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+      <div class="neo-input" style="padding: 10px;">
+        <%= form.file_field :imagen_usuario, accept: 'image/*', style: "width: 100%; font-family: inherit;" %>
+      </div>
+    </div>
 
-  def new
-    @usuario = Usuario.new
-  end
+    <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: flex-end;">
+      <%= link_to "Cancelar", usuarios_path, class: "neo-button", style: "width: auto; padding: 12px 30px; text-decoration: none; display: flex; align-items: center;" %>
+      <%= form.submit "Guardar", class: "neo-button", style: "width: auto; padding: 12px 30px;" %>
+    </div>
 
-  def edit
-    @usuario = Usuario.find(params[:id])
-  end
-
-  def create
-    @usuario = Usuario.new(usuario_params)
-    
-    respond_to do |format|
-      if @usuario.save
-        format.html { redirect_to usuarios_path, notice: 'Usuario creado exitosamente.' }
-        format.json { render json: { success: true, usuario: @usuario }, status: :created }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { success: false, errors: @usuario.errors.full_messages }, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def update
-    @usuario = Usuario.find(params[:id])
-    
-    # Evitar guardar contraseña en blanco si no la quieren cambiar al editar
-    p = usuario_params
-    p.delete(:strPwd) if p[:strPwd].blank?
-    
-    respond_to do |format|
-      if @usuario.update(p)
-        format.html { redirect_to usuarios_path, notice: 'Usuario actualizado exitosamente.' }
-        format.json { render json: { success: true, usuario: @usuario } }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: { success: false, errors: @usuario.errors.full_messages }, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def destroy
-    @usuario = Usuario.find(params[:id])
-    @usuario.destroy
-    
-    respond_to do |format|
-      format.html { redirect_to usuarios_path, notice: 'Usuario eliminado exitosamente.' }
-      format.json { render json: { success: true } }
-    end
-  end
-
-  private
-
-  def usuario_params
-    params.require(:usuario).permit(:strNombreUsuario, :idPerfil, :strPwd, :strCorreo, :strNumeroCelular, :idEstado_Usuario, :imagen_usuario)
-  end
-end
+  <% end %>
+</div>
