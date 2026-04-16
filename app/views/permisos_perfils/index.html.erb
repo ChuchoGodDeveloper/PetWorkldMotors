@@ -96,14 +96,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const cargarPermisos = async () => {
     try {
-      // Tomamos el valor actual del select para filtrar
       const perfilId = campos.idPerfil.value;
-      const url = perfilId ? `/permisos_perfils.json?perfil_id=${perfilId}` : '/permisos_perfils.json';
-      
-      const res = await fetch(url);
+      tabla.innerHTML = ''; // Limpiamos la tabla primero
+
+      // 1. Si no hay perfil seleccionado, mostramos mensaje y cortamos la ejecución
+      if (!perfilId) {
+        tabla.innerHTML = `
+          <tr>
+            <td colspan="8" style="padding: 30px; text-align: center; color: #999; font-style: italic;">
+              Selecciona un perfil en la lista superior para ver sus permisos asignados.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // 2. Si hay perfil, pedimos solo sus datos
+      const res = await fetch(`/permisos_perfils.json?perfil_id=${perfilId}`);
       const data = await res.json();
       
-      tabla.innerHTML = '';
+      // 3. Si el perfil no tiene nada asignado aún
+      if (data.length === 0) {
+        tabla.innerHTML = `
+          <tr>
+            <td colspan="8" style="padding: 30px; text-align: center; color: #999; font-style: italic;">
+              Este perfil aún no tiene módulos asignados.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // 4. Llenamos la tabla filtrada
       data.forEach(permiso => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -128,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Recarga la tabla cuando cambias el perfil en el desplegable
   campos.idPerfil.addEventListener('change', cargarPermisos);
 
   form.addEventListener('submit', async (e) => {
@@ -159,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res.ok) {
         const perfilActual = campos.idPerfil.value;
         limpiarFormulario();
-        campos.idPerfil.value = perfilActual; // Mantiene el filtro
+        campos.idPerfil.value = perfilActual; 
         cargarPermisos();
       } else {
         const errorData = await res.json();
@@ -204,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const limpiarFormulario = () => {
     campos.id.value = '';
-    // Mantenemos el perfil si queremos seguir agregando permisos al mismo usuario
     campos.idModulo.value = '';
     campos.bitAgregar.checked = false;
     campos.bitEditar.checked = false;
@@ -216,10 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btnCancelar.addEventListener('click', () => {
     limpiarFormulario();
-    campos.idPerfil.value = ''; // Al cancelar, limpiamos todo
+    campos.idPerfil.value = ''; 
     cargarPermisos();
   });
 
+  // Ejecuta al cargar la página (estará vacío porque no hay selección inicial)
   cargarPermisos();
 });
 </script>
