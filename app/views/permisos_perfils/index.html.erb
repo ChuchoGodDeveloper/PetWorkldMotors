@@ -1,57 +1,62 @@
-<div class="neo-container" style="width: 900px; max-width: 95%;">
-  <div style="text-align: left; font-size: 12px; color: #888; margin-bottom: 20px;">
+<div class="neo-container" style="width: 100%; max-width: 1000px; margin: 0 auto; padding: 40px;">
+  
+  <div style="text-align: left; font-size: 14px; color: #888; margin-bottom: 30px;">
     <a href="/principal" style="color: #888; text-decoration: none;">Inicio</a> > Seguridad > Permisos Perfil
   </div>
 
-  <div class="neo-title">Módulo Permisos Perfil</div>
+  <h2 class="neo-title" style="text-align: center; margin-bottom: 40px;">Módulo Permisos Perfil</h2>
 
-  <form id="form-permisos" style="margin-bottom: 30px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+  <form id="form-permisos" style="margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px;">
     <input type="hidden" id="permiso-id">
 
-    <div style="flex: 1; min-width: 150px;">
-      <label style="font-size: 14px; color: #666;">Perfil:</label>
-      <select id="idPerfil" class="neo-input" style="margin-bottom: 0; padding: 10px;" required>
-        <option value="">Seleccione...</option>
-      </select>
+    <div style="display: flex; gap: 40px; justify-content: center; width: 100%;">
+      <div style="flex: 1; text-align: center;">
+        <label style="font-size: 16px; color: #666; margin-bottom: 10px; display: block;">Perfil:</label>
+        <select id="idPerfil" class="neo-input" style="width: 100%; margin: 0;" required>
+          <option value="">Seleccione...</option>
+        </select>
+      </div>
+
+      <div style="flex: 1; text-align: center;">
+        <label style="font-size: 16px; color: #666; margin-bottom: 10px; display: block;">Módulo:</label>
+        <select id="idModulo" class="neo-input" style="width: 100%; margin: 0;" required>
+          <option value="">Seleccione...</option>
+        </select>
+      </div>
     </div>
 
-    <div style="flex: 1; min-width: 150px;">
-      <label style="font-size: 14px; color: #666;">Módulo:</label>
-      <select id="idModulo" class="neo-input" style="margin-bottom: 0; padding: 10px;" required>
-        <option value="">Seleccione...</option>
-      </select>
+    <div style="display: flex; gap: 20px; justify-content: flex-start; width: 100%; color: #666; font-size: 16px; margin-top: 10px; padding-left: 10px;">
+      <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="bitAgregar" style="width: 16px; height: 16px;"> Agregar</label>
+      <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="bitEditar" style="width: 16px; height: 16px;"> Editar</label>
+      <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="bitConsulta" style="width: 16px; height: 16px;"> Consulta</label>
+      <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="bitEliminar" style="width: 16px; height: 16px;"> Eliminar</label>
+      <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" id="bitDetalle" style="width: 16px; height: 16px;"> Detalle</label>
     </div>
 
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%; margin-top: 10px; color: #666; font-size: 14px;">
-      <label><input type="checkbox" id="bitAgregar"> Agregar</label>
-      <label><input type="checkbox" id="bitEditar"> Editar</label>
-      <label><input type="checkbox" id="bitConsulta"> Consulta</label>
-      <label><input type="checkbox" id="bitEliminar"> Eliminar</label>
-      <label><input type="checkbox" id="bitDetalle"> Detalle</label>
-    </div>
-
-    <div style="width: 100%; display: flex; gap: 10px; justify-content: flex-end;">
-      <button type="submit" class="neo-button" style="width: auto; padding: 10px 20px;" id="btn-guardar">Guardar</button>
-      <button type="button" class="neo-button" style="width: auto; padding: 10px 20px; display: none;" id="btn-cancelar">Cancelar</button>
+    <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px; gap: 15px;">
+      <button type="button" class="neo-button" style="width: auto; padding: 12px 30px; display: none;" id="btn-cancelar">Cancelar</button>
+      <button type="submit" class="neo-button" style="width: auto; padding: 12px 40px;" id="btn-guardar">Guardar</button>
     </div>
   </form>
 
-  <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a; font-size: 13px;">
-    <thead>
-      <tr style="border-bottom: 2px solid #c9d0dabc;">
-        <th style="padding: 10px;">Perfil</th>
-        <th style="padding: 10px;">Módulo</th>
-        <th style="padding: 5px;">Agregar</th>
-        <th style="padding: 5px;">Editar</th>
-        <th style="padding: 5px;">Consulta</th>
-        <th style="padding: 5px;">Eliminar</th>
-        <th style="padding: 5px;">Detalle</th>
-        <th style="padding: 10px; text-align: center;">Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-permisos">
-    </tbody>
-  </table>
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; color: #4a4a4a; font-size: 15px;">
+      <thead>
+        <tr style="border-bottom: 2px solid rgba(163,177,198,0.3);">
+          <th style="padding: 15px; font-weight: bold; border-bottom: 2px solid rgba(163,177,198,0.3);">Perfil</th>
+          <th style="padding: 15px; font-weight: bold; border-bottom: 2px solid rgba(163,177,198,0.3);">Módulo</th>
+          <th style="padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid rgba(163,177,198,0.3);">Agregar</th>
+          <th style="padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid rgba(163,177,198,0.3);">Editar</th>
+          <th style="padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid rgba(163,177,198,0.3);">Consulta</th>
+          <th style="padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid rgba(163,177,198,0.3);">Eliminar</th>
+          <th style="padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid rgba(163,177,198,0.3);">Detalle</th>
+          <th style="padding: 15px; font-weight: bold; text-align: center; border-bottom: 2px solid rgba(163,177,198,0.3);">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-permisos">
+        </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
@@ -59,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('jwt_token');
   if (!token) window.location.replace('/login');
 
-  // Llenar catálogos desde Ruby a JS
   const perfiles = <%= raw Perfil.all.select(:id, :strNombre_Perfil).to_json %>;
   const modulos = <%= raw Modulo.all.select(:id, :strNombreModulo).to_json %>;
 
@@ -84,6 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
     bitDetalle: document.getElementById('bitDetalle')
   };
 
+  const generarCheckHTML = (valor) => {
+    return valor ? 
+      '<span style="color: #6c5ce7; font-weight: bold; font-size: 1.2rem;">✔️</span>' : 
+      '<span style="color: #ff7675; font-weight: bold; font-size: 1.2rem;">✖️</span>';
+  };
+
   const cargarPermisos = async () => {
     try {
       // Tomamos el valor actual del select para filtrar
@@ -96,18 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
       tabla.innerHTML = '';
       data.forEach(permiso => {
         const tr = document.createElement('tr');
-        tr.style.borderBottom = '1px solid #c9d0dabc';
         tr.innerHTML = `
-          <td style="padding: 10px;">${permiso.perfil.strNombre_Perfil}</td>
-          <td style="padding: 10px;">${permiso.modulo.strNombreModulo}</td>
-          <td style="padding: 5px;">${permiso.bitAgregar ? '✔️' : '❌'}</td>
-          <td style="padding: 5px;">${permiso.bitEditar ? '✔️' : '❌'}</td>
-          <td style="padding: 5px;">${permiso.bitConsulta ? '✔️' : '❌'}</td>
-          <td style="padding: 5px;">${permiso.bitEliminar ? '✔️' : '❌'}</td>
-          <td style="padding: 5px;">${permiso.bitDetalle ? '✔️' : '❌'}</td>
-          <td style="padding: 10px; text-align: center;">
-            <button type="button" class="neo-button" style="padding: 5px 10px; font-size: 11px; width: auto;" onclick="editarPermiso(${permiso.id})">Editar</button>
-            <button type="button" class="neo-button" style="padding: 5px 10px; font-size: 11px; width: auto; color: #ff4757;" onclick="eliminarPermiso(${permiso.id})">Eliminar</button>
+          <td style="padding: 15px; color: #666; border-bottom: 1px solid rgba(163,177,198,0.2);">${permiso.perfil.strNombre_Perfil}</td>
+          <td style="padding: 15px; color: #666; border-bottom: 1px solid rgba(163,177,198,0.2);">${permiso.modulo.strNombreModulo}</td>
+          <td style="padding: 15px; text-align: center; border-bottom: 1px solid rgba(163,177,198,0.2);">${generarCheckHTML(permiso.bitAgregar)}</td>
+          <td style="padding: 15px; text-align: center; border-bottom: 1px solid rgba(163,177,198,0.2);">${generarCheckHTML(permiso.bitEditar)}</td>
+          <td style="padding: 15px; text-align: center; border-bottom: 1px solid rgba(163,177,198,0.2);">${generarCheckHTML(permiso.bitConsulta)}</td>
+          <td style="padding: 15px; text-align: center; border-bottom: 1px solid rgba(163,177,198,0.2);">${generarCheckHTML(permiso.bitEliminar)}</td>
+          <td style="padding: 15px; text-align: center; border-bottom: 1px solid rgba(163,177,198,0.2);">${generarCheckHTML(permiso.bitDetalle)}</td>
+          <td style="padding: 15px; text-align: center; border-bottom: 1px solid rgba(163,177,198,0.2);">
+            <div style="display: flex; justify-content: center; gap: 10px;">
+              <button type="button" class="neo-button" style="padding: 6px 15px; font-size: 13px; width: auto;" onclick="editarPermiso(${permiso.id})">Editar</button>
+              <button type="button" class="neo-button" style="padding: 6px 15px; font-size: 13px; width: auto; color: #ff4757;" onclick="eliminarPermiso(${permiso.id})">Eliminar</button>
+            </div>
           </td>
         `;
         tabla.appendChild(tr);
@@ -117,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Escuchar cuando el usuario cambie el perfil en el select para recargar la tabla
+  // Recarga la tabla cuando cambias el perfil en el desplegable
   campos.idPerfil.addEventListener('change', cargarPermisos);
 
   form.addEventListener('submit', async (e) => {
@@ -146,10 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (res.ok) {
-        // Guardamos el idPerfil actual antes de limpiar para no perder el filtro de la tabla
         const perfilActual = campos.idPerfil.value;
         limpiarFormulario();
-        campos.idPerfil.value = perfilActual; // Restauramos la selección
+        campos.idPerfil.value = perfilActual; // Mantiene el filtro
         cargarPermisos();
       } else {
         const errorData = await res.json();
@@ -176,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
       campos.bitDetalle.checked = permiso.bitDetalle;
       
       btnCancelar.style.display = 'inline-block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Error:', error);
     }
@@ -193,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const limpiarFormulario = () => {
     campos.id.value = '';
-    campos.idPerfil.value = '';
+    // Mantenemos el perfil si queremos seguir agregando permisos al mismo usuario
     campos.idModulo.value = '';
     campos.bitAgregar.checked = false;
     campos.bitEditar.checked = false;
@@ -203,7 +214,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCancelar.style.display = 'none';
   };
 
-  btnCancelar.addEventListener('click', limpiarFormulario);
+  btnCancelar.addEventListener('click', () => {
+    limpiarFormulario();
+    campos.idPerfil.value = ''; // Al cancelar, limpiamos todo
+    cargarPermisos();
+  });
 
   cargarPermisos();
 });
