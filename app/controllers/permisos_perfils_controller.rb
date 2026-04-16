@@ -2,7 +2,12 @@ class PermisosPerfilsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    @permisos = PermisosPerfil.includes(:perfil, :modulo).all
+    @permisos = PermisosPerfil.includes(:perfil, :modulo)
+    
+    # Filtramos por idPerfil si el frontend envía el parámetro
+    if params[:perfil_id].present?
+      @permisos = @permisos.where(idPerfil: params[:perfil_id])
+    end
     
     respond_to do |format|
       format.html
