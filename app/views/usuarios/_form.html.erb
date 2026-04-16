@@ -26,6 +26,13 @@
       <div>
         <%= form.label :strPwd, "Contraseña #{'*' if usuario.new_record?}", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
         <%= form.password_field :strPwd, class: "neo-input", placeholder: "********", required: usuario.new_record?, style: "margin: 0;" %>
+
+<% unless usuario.new_record? %>
+  <div style="font-size: 10px; color: #999; word-break: break-all;">
+    Hash guardado: <%= usuario.strPwd %>
+  </div>
+<% end %>
+
       </div>
     </div>
 
