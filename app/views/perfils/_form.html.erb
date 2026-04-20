@@ -1,11 +1,10 @@
-<div class="neo-container" style="max-width: 600px; margin: 0 auto;">
-  
+<div class="neo-container" style="max-width: 600px; margin: 0 auto; padding: 30px;">
   <h2 class="neo-title"><%= @perfil.new_record? ? 'Nuevo Perfil' : 'Editar Perfil' %></h2>
 
   <%= form_with(model: @perfil, local: true, style: "text-align: left; margin-top: 30px;") do |form| %>
     
     <% if @perfil.errors.any? %>
-      <div class="error-msg" style="display: block;">
+      <div class="error-msg" style="display: block; color: #ff4757; margin-bottom: 20px;">
         <ul style="margin: 0; padding-left: 20px;">
           <% @perfil.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -15,22 +14,18 @@
     <% end %>
 
     <div style="margin-bottom: 25px;">
-      <%= form.label :strNombre_Perfil, "NOMBRE DEL PERFIL *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-      <%= form.text_field :strNombre_Perfil, class: "neo-input", required: true %>
+      <%= form.label :strNombre_Perfil, "Nombre del Perfil *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
+      <%= form.text_field :strNombre_Perfil, class: "neo-input valida-nombre", required: true, minlength: "3" %>
     </div>
 
-    <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
-      <%= form.check_box :bitAdministrador, style: "width: 20px; height: 20px; cursor: pointer; box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8);" %>
-      <div>
-        <label for="perfil_bitAdministrador" style="font-weight: bold; color: #333; cursor: pointer;">Perfil Administrador</label>
-        <span class="neo-subtitle" style="display: block; margin-top: 5px; margin-bottom: 0;">Los administradores tienen acceso completo al sistema.</span>
-      </div>
+    <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
+      <%= form.check_box :bitAdministrador, style: "width: 20px; height: 20px;" %>
+      <%= form.label :bitAdministrador, "¿Es Administrador Total?", class: "neo-subtitle", style: "margin: 0; font-weight: bold;" %>
     </div>
 
-    <div style="display: flex; gap: 15px;">
-      <%= form.submit "Guardar Perfil", class: "neo-button" %>
-      <%= link_to "Cancelar", perfils_path, class: "neo-button", style: "text-decoration: none; display: flex; align-items: center; justify-content: center; box-sizing: border-box;" %>
+    <div style="display: flex; gap: 15px; margin-top: 30px;">
+      <%= form.submit "Guardar", class: "neo-button" %>
+      <%= link_to "Cancelar", perfils_path, class: "neo-button", style: "text-decoration: none; display: flex; align-items: center; justify-content: center;" %>
     </div>
-
   <% end %>
 </div>

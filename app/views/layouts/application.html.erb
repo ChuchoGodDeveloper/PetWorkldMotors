@@ -6,17 +6,13 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
   <body>
     <% unless request.path == '/login' || request.path == '/' %>
       <div class="neo-sidebar" id="sidebar-menu">
         <div class="neo-title" style="font-size: 20px; text-align: center; margin-bottom: 30px;">PetWorld</div>
-        
-        <div id="dinamic-nav">
-          </div>
-
+        <div id="dinamic-nav"></div>
         <button id="btn-logout" class="neo-button" style="margin-top: auto; color: #ff4757; padding: 10px;">Cerrar Sesión</button>
       </div>
     <% end %>
@@ -28,88 +24,113 @@
 
     <% unless request.path == '/login' || request.path == '/' %>
     <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('jwt_token');
-    if (!token) {
-      window.location.replace('/login');
-      return;
-    }
+      document.addEventListener('DOMContentLoaded', async () => {
+        // --- 1. LÓGICA DEL MENÚ LATERAL ---
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+          window.location.replace('/login');
+          return;
+        }
 
-    const nav = document.getElementById('dinamic-nav');
+        const nav = document.getElementById('dinamic-nav');
+        try {
+          const res = await fetch('/menu_dinamico', { headers: { 'Authorization': `Bearer ${token}` } });
+          if (!res.ok) throw new Error('No autorizado');
 
-    try {
-      const res = await fetch('/menu_dinamico', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+          const menuData = await res.json();
+          for (const [padre, datosPadre] of Object.entries(menuData)) {
+            const btn = document.createElement('button');
+            btn.className = 'menu-item';
+            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i><span>${padre}</span></div><span>▼</span>`;
+            
+            const submenu = document.createElement('div');
+            submenu.className = 'submenu';
 
-      if (!res.ok) throw new Error('No autorizado');
+            datosPadre.modulos.forEach(mod => {
+              const link = document.createElement('a');
+              link.href = mod.url;
+              link.style.cssText = 'display: flex; align-items: center; gap: 10px;';
+              link.innerHTML = `<i class="${mod.icono}" style="width: 15px; text-align: center; font-size: 14px;"></i><span>${mod.nombre.replace('_', ' ')}</span>`;
+              submenu.appendChild(link);
+            });
 
-      const menuData = await res.json();
-      localStorage.setItem('permisos_usuario', JSON.stringify(menuData));
+            btn.onclick = () => {
+              const isOculto = submenu.style.display === 'none' || submenu.style.display === '';
+              submenu.style.display = isOculto ? 'flex' : 'none';
+              btn.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i><span>${padre}</span></div><span>${isOculto ? '▲' : '▼'}</span>`;
+            };
 
-      // Iteramos sobre los Apartados (padre) y sus datos (que incluyen icono y módulos)
-      for (const [padre, datosPadre] of Object.entries(menuData)) {
-        
-        // Crear Botón Principal del Desplegable (con su icono)
-        const btn = document.createElement('button');
-        btn.className = 'menu-item';
-        btn.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i>
-            <span>${padre}</span>
-          </div> 
-          <span>▼</span>
-        `;
-        
-        // Crear Contenedor de Submenús
-        const submenu = document.createElement('div');
-        submenu.className = 'submenu';
+            nav.appendChild(btn);
+            nav.appendChild(submenu);
+          }
+        } catch (error) {
+          console.error(error);
+          localStorage.removeItem('jwt_token');
+          window.location.replace('/login');
+        }
 
-        // Agregar los enlaces de los Módulos (con su respectivo icono)
-        datosPadre.modulos.forEach(mod => {
-          const link = document.createElement('a');
-          link.href = mod.url;
-          link.style.display = 'flex';
-          link.style.alignItems = 'center';
-          link.style.gap = '10px';
-          link.innerHTML = `
-            <i class="${mod.icono}" style="width: 15px; text-align: center; font-size: 14px;"></i> 
-            <span>${mod.nombre.replace('_', ' ')}</span>
-          `;
-          submenu.appendChild(link);
+        document.getElementById('btn-logout').addEventListener('click', () => {
+          localStorage.removeItem('jwt_token');
+          window.location.replace('/login');
         });
 
-        // Lógica para Expandir/Contraer
-        btn.onclick = () => {
-          const isOculto = submenu.style.display === 'none' || submenu.style.display === '';
-          submenu.style.display = isOculto ? 'flex' : 'none';
-          
-          btn.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i>
-              <span>${padre}</span>
-            </div> 
-            <span>${isOculto ? '▲' : '▼'}</span>
-          `;
-        };
+        // --- 2. LÓGICA DE VALIDACIONES GLOBALES ---
+        document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]').forEach(input => {
+          if (!input.hasAttribute('maxlength')) input.setAttribute('maxlength', '70');
+        });
 
-        nav.appendChild(btn);
-        nav.appendChild(submenu);
-      }
-    } catch (error) {
-      console.error(error);
-      localStorage.removeItem('jwt_token');
-      window.location.replace('/login');
-    }
+        document.addEventListener('input', function(e) {
+          const target = e.target;
+          if (target.classList.contains('valida-nombre')) {
+            let val = target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            val = val.replace(/^\s+/, '');
+            target.value = val.replace(/\s{2,}/g, ' ');
+          }
+          if (target.classList.contains('valida-telefono')) {
+            target.value = target.value.replace(/[^0-9]/g, '');
+          }
+          if (target.classList.contains('valida-correo')) {
+            target.value = target.value.replace(/\s/g, '').toLowerCase();
+          }
+          if (target.classList.contains('valida-pwd')) {
+            target.value = target.value.replace(/\s/g, '');
+          }
+        });
 
-    document.getElementById('btn-logout').addEventListener('click', () => {
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('permisos_usuario');
-      window.location.replace('/login');
-    });
-  });
-</script>
+        document.addEventListener('submit', function(e) {
+          const form = e.target;
+          let errores = [];
+
+          form.querySelectorAll('.valida-telefono').forEach(input => {
+            if (input.value.length > 0 && input.value.length !== 10) {
+              errores.push("El celular debe tener exactamente 10 dígitos.");
+              input.focus();
+            }
+          });
+          form.querySelectorAll('.valida-nombre').forEach(input => {
+            if (input.value.trim().length > 0 && input.value.trim().length < 3) {
+              errores.push("El nombre debe tener al menos 3 letras.");
+            }
+          });
+          form.querySelectorAll('.valida-pwd').forEach(input => {
+            if (input.value.length > 0 && input.value.length < 6) {
+              errores.push("La contraseña debe tener al menos 6 caracteres.");
+            }
+          });
+          form.querySelectorAll('.valida-correo').forEach(input => {
+            const regexCorreo = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (input.value.length > 0 && !regexCorreo.test(input.value)) {
+              errores.push("El formato del correo no es válido.");
+            }
+          });
+
+          if (errores.length > 0) {
+            e.preventDefault();
+            alert("Corrige lo siguiente antes de guardar:\n\n- " + errores.join("\n- "));
+          }
+        });
+      });
+    </script>
     <% end %>
-
   </body>
 </html>

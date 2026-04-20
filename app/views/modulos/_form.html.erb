@@ -17,13 +17,11 @@
 
     <div style="padding: 20px; border-bottom: 2px solid rgba(163,177,198,0.3); margin-bottom: 20px;">
       <h3 class="neo-subtitle" style="margin-bottom: 20px; color: #333;">1. Datos del Módulo</h3>
-      
       <div style="display: flex; gap: 20px; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 250px;">
           <%= form.label :strNombreModulo, "Nombre del Módulo *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-          <%= form.text_field :strNombreModulo, placeholder: "Ej: Clientes, Reportes...", class: "neo-input", required: true, style: "width: 100%; margin-bottom: 5px;" %>
+          <%= form.text_field :strNombreModulo, placeholder: "Ej: Clientes...", class: "neo-input", required: true, minlength: "3", style: "width: 100%; margin-bottom: 5px;" %>
         </div>
-
         <div style="flex: 1; min-width: 250px;">
           <%= form.label :strIcono_Modulo, "Icono del Módulo", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
           <%= form.text_field :strIcono_Modulo, id: "icono-modulo-input", placeholder: "Ej: fas fa-car", class: "neo-input", style: "width: 100%; margin-bottom: 5px;" %>
@@ -33,7 +31,6 @@
 
     <div style="padding: 20px; border-bottom: 2px solid rgba(163,177,198,0.3); margin-bottom: 30px;">
       <h3 class="neo-subtitle" style="margin-bottom: 20px; color: #333;">2. Ubicación en el Menú</h3>
-      
       <div style="margin-bottom: 20px;">
         <label class="neo-subtitle" style="display: block; font-weight: bold; margin-bottom: 10px;">Selecciona un Apartado Existente:</label>
         <%= form.collection_select :apartado_id, Apartado.all, :id, :strNombre_Apartado, { prompt: "Seleccione uno..." }, { class: "neo-input", style: "width: 100%; appearance: auto;" } %>
@@ -41,11 +38,9 @@
 
       <div style="padding: 15px; border-radius: 10px; background: rgba(163,177,198,0.1);">
         <label class="neo-subtitle" style="display: block; font-weight: bold; margin-bottom: 10px; color: #2e8b57;">¿O quieres crear un NUEVO Apartado?</label>
-        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Llena esto solo si quieres crear una categoría nueva (Ej. "Inventario").</p>
-        
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
           <div style="flex: 1; min-width: 200px;">
-            <input type="text" name="nuevo_apartado_nombre" placeholder="Nombre del nuevo apartado" class="neo-input" style="width: 100%;">
+            <input type="text" name="nuevo_apartado_nombre" placeholder="Nombre del nuevo apartado" class="neo-input valida-nombre" minlength="3" style="width: 100%;">
           </div>
           <div style="flex: 1; min-width: 200px;">
             <input type="text" name="nuevo_apartado_icono" id="icono-apartado-input" placeholder="Icono del nuevo apartado" class="neo-input" style="width: 100%;">
@@ -56,10 +51,7 @@
 
     <div style="padding: 20px; margin-bottom: 30px;">
       <h3 class="neo-subtitle" style="margin-bottom: 10px; color: #333;">Catálogo de Iconos Rápido</h3>
-      <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Da clic en un icono para copiar su código. Pégalo en los campos de arriba.</p>
-      
-      <div id="icon-catalog" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 15px;">
-        </div>
+      <div id="icon-catalog" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 15px;"></div>
     </div>
 
     <div style="display: flex; gap: 15px; justify-content: flex-end;">
@@ -71,56 +63,22 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Catálogo ampliado de iconos empresariales y de sistema
-    const iconos = [
-      // Usuarios y Perfiles
-      'fas fa-users', 'fas fa-user-tie', 'fas fa-user-shield', 'fas fa-id-badge', 'fas fa-address-card', 'fas fa-user-cog',
-      
-      // Estructura y Módulos
-      'fas fa-cubes', 'fas fa-layer-group', 'fas fa-puzzle-piece', 'fas fa-sitemap', 'fas fa-th-large', 'fas fa-bars',
-      
-      // Seguridad y Accesos
-      'fas fa-shield-alt', 'fas fa-key', 'fas fa-lock', 'fas fa-unlock-alt', 'fas fa-fingerprint',
-      
-      // Reportes y Finanzas
-      'fas fa-chart-line', 'fas fa-chart-pie', 'fas fa-chart-bar', 'fas fa-file-invoice-dollar', 'fas fa-wallet',
-      
-      // Empresa y Negocio
-      'fas fa-briefcase', 'fas fa-building', 'fas fa-store', 'fas fa-cash-register', 'fas fa-tags',
-      
-      // Sistema y Configuraciones
-      'fas fa-cog', 'fas fa-cogs', 'fas fa-sliders-h', 'fas fa-database', 'fas fa-server', 'fas fa-laptop-code',
-      
-      // Vehículos y Taller (Específicos de Motors)
-      'fas fa-car', 'fas fa-motorcycle', 'fas fa-truck', 'fas fa-wrench', 'fas fa-toolbox',
-      
-      // Generales y Operación
-      'fas fa-home', 'fas fa-envelope', 'fas fa-bell', 'fas fa-calendar-alt', 'fas fa-box', 'fas fa-clipboard-list'
-    ];
-
+    const iconos = ['fas fa-users', 'fas fa-user-tie', 'fas fa-user-shield', 'fas fa-id-badge', 'fas fa-address-card', 'fas fa-user-cog', 'fas fa-cubes', 'fas fa-layer-group', 'fas fa-puzzle-piece', 'fas fa-sitemap', 'fas fa-th-large', 'fas fa-bars', 'fas fa-shield-alt', 'fas fa-key', 'fas fa-lock', 'fas fa-unlock-alt', 'fas fa-fingerprint', 'fas fa-chart-line', 'fas fa-chart-pie', 'fas fa-chart-bar', 'fas fa-file-invoice-dollar', 'fas fa-wallet', 'fas fa-briefcase', 'fas fa-building', 'fas fa-store', 'fas fa-cash-register', 'fas fa-tags', 'fas fa-cog', 'fas fa-cogs', 'fas fa-sliders-h', 'fas fa-database', 'fas fa-server', 'fas fa-laptop-code', 'fas fa-car', 'fas fa-motorcycle', 'fas fa-truck', 'fas fa-wrench', 'fas fa-toolbox', 'fas fa-home', 'fas fa-envelope', 'fas fa-bell', 'fas fa-calendar-alt', 'fas fa-box', 'fas fa-clipboard-list'];
     const catalog = document.getElementById('icon-catalog');
 
     iconos.forEach(icono => {
       const btn = document.createElement('div');
       btn.className = 'neo-button';
-      // Ajusté un poco el estilo para que se vean mejor al hacer hover
       btn.style.cssText = 'width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; padding: 0; transition: all 0.2s;';
       btn.innerHTML = `<i class="${icono}"></i>`;
-      
-      // Efecto visual rápido al pasar el mouse
       btn.onmouseover = () => btn.style.color = '#3498db';
       btn.onmouseout = () => btn.style.color = '';
-
-      // Al hacer clic, copia el nombre de la clase al portapapeles
       btn.onclick = () => {
         navigator.clipboard.writeText(icono);
-        
-        // Pequeña animación visual en lugar del alert para que sea más fluido
         const iconoOriginal = btn.innerHTML;
         btn.innerHTML = `<i class="fas fa-check" style="color: #2ecc71;"></i>`;
         setTimeout(() => btn.innerHTML = iconoOriginal, 1000);
       };
-      
       catalog.appendChild(btn);
     });
   });
