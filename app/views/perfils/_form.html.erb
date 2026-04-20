@@ -1,10 +1,10 @@
-<div class="neo-container" style="max-width: 800px; margin: 0 auto; padding: 30px;">
-  <h2 class="neo-title" style="text-align: center; margin-bottom: 30px;"><%= @usuario.new_record? ? 'Nuevo Usuario' : 'Editar Usuario' %></h2>
+<div class="neo-container" style="width: 100%; max-width: 800px; margin: 0 auto; padding: 40px;">
+  <h2 class="neo-title" style="text-align: center; margin-bottom: 40px;"><%= @usuario.new_record? ? 'Nuevo Usuario' : 'Editar Usuario' %></h2>
 
-  <%= form_with(model: @usuario, local: true, html: { multipart: true }, style: "text-align: left;") do |form| %>
+  <%= form_with(model: @usuario, local: true, html: { multipart: true }) do |form| %>
     
     <% if @usuario.errors.any? %>
-      <div class="error-msg" style="display: block; color: #ff4757; margin-bottom: 20px;">
+      <div class="error-msg" style="color: #ff4757; margin-bottom: 20px; text-align: left;">
         <ul style="margin: 0; padding-left: 20px;">
           <% @usuario.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -13,48 +13,48 @@
       </div>
     <% end %>
 
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <%= form.label :imagen_usuario, "FOTO DE PERFIL", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+      <%= form.file_field :imagen_usuario, class: "neo-input", style: "width: 100%; max-width: 400px; padding: 10px; margin: 0 auto;" %>
+    </div>
 
-      <div style="grid-column: span 2;">
-        <%= form.label :imagen_usuario, "Foto de Perfil", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.file_field :imagen_usuario, class: "neo-input", style: "padding: 10px; width: 100%; box-sizing: border-box;" %>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; text-align: left;">
+      
+      <div>
+        <%= form.label :strNombreUsuario, "NOMBRE DE USUARIO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+        <%= form.text_field :strNombreUsuario, class: "neo-input valida-nombre", required: true, minlength: "3", style: "width: 100%; margin: 0;" %>
       </div>
 
       <div>
-        <%= form.label :strNombreUsuario, "Nombre de Usuario *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.text_field :strNombreUsuario, class: "neo-input valida-nombre", required: true, minlength: "3", style: "width: 100%; box-sizing: border-box;" %>
+        <%= form.label :idPerfil, "PERFIL ASIGNADO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione un perfil..." }, { class: "neo-input", required: true, style: "width: 100%; margin: 0; appearance: auto;" } %>
       </div>
 
       <div>
-        <%= form.label :idPerfil, "Perfil Asignado *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione un perfil..." }, { class: "neo-input", required: true, style: "width: 100%; box-sizing: border-box;" } %>
+        <%= form.label :strCorreo, "CORREO ELECTRÓNICO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+        <%= form.email_field :strCorreo, class: "neo-input valida-correo", required: true, style: "width: 100%; margin: 0;" %>
       </div>
 
       <div>
-        <%= form.label :strCorreo, "Correo Electrónico *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.email_field :strCorreo, class: "neo-input valida-correo", required: true, style: "width: 100%; box-sizing: border-box;" %>
+        <%= form.label :strNumeroCelular, "NÚMERO CELULAR", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+        <%= form.text_field :strNumeroCelular, class: "neo-input valida-telefono", maxlength: "10", style: "width: 100%; margin: 0;" %>
       </div>
 
       <div>
-        <%= form.label :strNumeroCelular, "Número Celular", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.text_field :strNumeroCelular, class: "neo-input valida-telefono", maxlength: "10", style: "width: 100%; box-sizing: border-box;" %>
+        <%= form.label :strPwd, @usuario.new_record? ? "CONTRASEÑA *" : "NUEVA CONTRASEÑA", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+        <%= form.password_field :strPwd, class: "neo-input valida-pwd", required: @usuario.new_record?, style: "width: 100%; margin: 0;" %>
       </div>
 
       <div>
-        <%= form.label :strPwd, @usuario.new_record? ? "Contraseña *" : "Nueva Contraseña (vacío si no cambia)", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.password_field :strPwd, class: "neo-input valida-pwd", required: @usuario.new_record?, style: "width: 100%; box-sizing: border-box;" %>
+        <%= form.label :idEstado_Usuario, "ESTADO", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
+        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 0]], {}, class: "neo-input", style: "width: 100%; margin: 0; appearance: auto;" %>
       </div>
 
-      <div>
-        <%= form.label :idEstado_Usuario, "Estado", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 0]], {}, class: "neo-input", style: "width: 100%; box-sizing: border-box;" %>
-      </div>
+    </div>
 
-      <div style="grid-column: span 2; display: flex; gap: 15px; margin-top: 15px; justify-content: center;">
-        <%= form.submit "Guardar", class: "neo-button" %>
-        <%= link_to "Cancelar", usuarios_path, class: "neo-button", style: "text-decoration: none; display: flex; align-items: center; justify-content: center;" %>
-      </div>
-
+    <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 40px;">
+      <%= link_to "Cancelar", usuarios_path, class: "neo-button", style: "text-decoration: none; padding: 12px 30px; display: flex; align-items: center;" %>
+      <%= form.submit "Guardar Usuario", class: "neo-button", style: "padding: 12px 40px;" %>
     </div>
   <% end %>
 </div>
