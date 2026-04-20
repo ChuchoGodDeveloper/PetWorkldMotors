@@ -7,10 +7,7 @@
 
   <div style="margin-bottom: 30px; text-align: left;">
     <label class="neo-subtitle" style="display: block; margin-bottom: 10px; font-weight: bold;">BUSCAR POR USUARIO</label>
-    <%= form_with url: usuarios_path, method: :get, local: true, style: "display: flex; gap: 15px;" do |f| %>
-      <%= f.text_field :q, value: params[:q], placeholder: "Nombre del usuario...", class: "neo-input", style: "margin: 0; flex-grow: 1;" %>
-      <%= f.submit "Buscar", class: "neo-button", style: "width: auto; padding: 10px 30px; margin: 0;" %>
-    <% end %>
+    <input type="text" id="buscador-input" placeholder="🔍 Buscar por nombre, perfil o correo..." class="neo-input" style="margin: 0; width: 100%; max-width: 500px;" autocomplete="off">
   </div>
 
   <div style="overflow-x: auto;">
@@ -28,7 +25,7 @@
       </thead>
       <tbody>
         <% @usuarios.each do |usuario| %>
-          <tr style="border-bottom: 1px solid rgba(163,177,198,0.3);">
+          <tr class="fila-busqueda" data-search="<%= "#{usuario.strNombreUsuario} #{usuario.perfil&.strNombre_Perfil} #{usuario.strCorreo}".downcase %>" style="border-bottom: 1px solid rgba(163,177,198,0.3);">
             <td style="padding: 15px 10px; color: #666;">
               <% if usuario.imagen_usuario.attached? %>
                 <%= image_tag usuario.imagen_usuario, style: "width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8);" %>
@@ -61,3 +58,20 @@
     <%= paginate @usuarios if defined?(paginate) %>
   </div>
 </div>
+
+<script>
+  document.getElementById('buscador-input').addEventListener('input', function (e) {
+    const term = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('.fila-busqueda');
+
+    rows.forEach(row => {
+      // Tomamos la data que guardamos combinada (nombre + perfil + correo)
+      const searchData = row.getAttribute('data-search') || '';
+      if (searchData.includes(term)) {
+        row.style.display = ''; 
+      } else {
+        row.style.display = 'none'; 
+      }
+    });
+  });
+</script>
