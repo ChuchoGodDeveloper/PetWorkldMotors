@@ -6,9 +6,10 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
   <body>
-
     <% unless request.path == '/login' || request.path == '/' %>
       <div class="neo-sidebar" id="sidebar-menu">
         <div class="neo-title" style="font-size: 20px; text-align: center; margin-bottom: 30px;">PetWorld</div>
@@ -27,65 +28,87 @@
 
     <% unless request.path == '/login' || request.path == '/' %>
     <script>
-      document.addEventListener('DOMContentLoaded', async () => {
-        const token = localStorage.getItem('jwt_token');
-        if (!token) {
-          window.location.replace('/login');
-          return;
-        }
+  document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+      window.location.replace('/login');
+      return;
+    }
 
-        const nav = document.getElementById('dinamic-nav');
+    const nav = document.getElementById('dinamic-nav');
 
-        try {
-          const res = await fetch('/menu_dinamico', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-
-          if (!res.ok) throw new Error('No autorizado');
-
-          const menuData = await res.json();
-          localStorage.setItem('permisos_usuario', JSON.stringify(menuData));
-
-          for (const [padre, submodulos] of Object.entries(menuData)) {
-            // Crear Botón Principal del Desplegable
-            const btn = document.createElement('button');
-            btn.className = 'menu-item';
-            btn.innerHTML = `<span>${padre}</span> <span>▼</span>`;
-            
-            // Crear Contenedor de Submenús
-            const submenu = document.createElement('div');
-            submenu.className = 'submenu';
-
-            submodulos.forEach(mod => {
-              const link = document.createElement('a');
-              link.href = mod.url;
-              link.textContent = mod.nombre.replace('_', ' ');
-              submenu.appendChild(link);
-            });
-
-            // Lógica para Expandir/Contraer
-            btn.onclick = () => {
-              const isOculto = submenu.style.display === 'none' || submenu.style.display === '';
-              submenu.style.display = isOculto ? 'flex' : 'none';
-              btn.innerHTML = `<span>${padre}</span> <span>${isOculto ? '▲' : '▼'}</span>`;
-            };
-
-            nav.appendChild(btn);
-            nav.appendChild(submenu);
-          }
-        } catch (error) {
-          console.error(error);
-          localStorage.removeItem('jwt_token');
-          window.location.replace('/login');
-        }
-
-        document.getElementById('btn-logout').addEventListener('click', () => {
-          localStorage.removeItem('jwt_token');
-          localStorage.removeItem('permisos_usuario');
-          window.location.replace('/login');
-        });
+    try {
+      const res = await fetch('/menu_dinamico', {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-    </script>
+
+      if (!res.ok) throw new Error('No autorizado');
+
+      const menuData = await res.json();
+      localStorage.setItem('permisos_usuario', JSON.stringify(menuData));
+
+      // Iteramos sobre los Apartados (padre) y sus datos (que incluyen icono y módulos)
+      for (const [padre, datosPadre] of Object.entries(menuData)) {
+        
+        // Crear Botón Principal del Desplegable (con su icono)
+        const btn = document.createElement('button');
+        btn.className = 'menu-item';
+        btn.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i>
+            <span>${padre}</span>
+          </div> 
+          <span>▼</span>
+        `;
+        
+        // Crear Contenedor de Submenús
+        const submenu = document.createElement('div');
+        submenu.className = 'submenu';
+
+        // Agregar los enlaces de los Módulos (con su respectivo icono)
+        datosPadre.modulos.forEach(mod => {
+          const link = document.createElement('a');
+          link.href = mod.url;
+          link.style.display = 'flex';
+          link.style.alignItems = 'center';
+          link.style.gap = '10px';
+          link.innerHTML = `
+            <i class="${mod.icono}" style="width: 15px; text-align: center; font-size: 14px;"></i> 
+            <span>${mod.nombre.replace('_', ' ')}</span>
+          `;
+          submenu.appendChild(link);
+        });
+
+        // Lógica para Expandir/Contraer
+        btn.onclick = () => {
+          const isOculto = submenu.style.display === 'none' || submenu.style.display === '';
+          submenu.style.display = isOculto ? 'flex' : 'none';
+          
+          btn.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i>
+              <span>${padre}</span>
+            </div> 
+            <span>${isOculto ? '▲' : '▼'}</span>
+          `;
+        };
+
+        nav.appendChild(btn);
+        nav.appendChild(submenu);
+      }
+    } catch (error) {
+      console.error(error);
+      localStorage.removeItem('jwt_token');
+      window.location.replace('/login');
+    }
+
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      localStorage.removeItem('jwt_token');
+      localStorage.removeItem('permisos_usuario');
+      window.location.replace('/login');
+    });
+  });
+</script>
     <% end %>
 
   </body>
