@@ -14,9 +14,22 @@
     <% end %>
 
     <div style="text-align: center; margin-bottom: 40px; width: 100%;">
-      <%= form.label :imagen_usuario, "FOTO DE PERFIL", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px;" %>
-      <%= form.file_field :imagen_usuario, class: "neo-input", style: "width: 100%; max-width: 400px; padding: 10px; margin: 0 auto; box-sizing: border-box;" %>
+      <%= form.label :imagen_usuario, "FOTO DE PERFIL", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 15px; font-size: 13px;" %>
+      
+      <div style="width: 130px; height: 130px; margin: 0 auto 20px auto; border-radius: 50%; overflow: hidden; box-shadow: inset 4px 4px 8px rgba(163,177,198,0.5), inset -4px -4px 8px rgba(255,255,255,0.8); background-color: #e0e5ec; display: flex; justify-content: center; align-items: center;">
+        
+        <% if @usuario.imagen_usuario.attached? %>
+          <%= image_tag @usuario.imagen_usuario, id: "preview-imagen", style: "width: 100%; height: 100%; object-fit: cover;" %>
+          <i id="preview-placeholder" class="fas fa-user" style="font-size: 50px; color: #a3b1c6; display: none;"></i>
+        <% else %>
+          <img id="preview-imagen" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+          <i id="preview-placeholder" class="fas fa-user" style="font-size: 50px; color: #a3b1c6;"></i>
+        <% end %>
+      </div>
+
+      <%= form.file_field :imagen_usuario, id: "input-imagen", accept: "image/png, image/jpeg, image/jpg", class: "neo-input", style: "width: 100%; max-width: 400px; padding: 10px; margin: 0 auto; box-sizing: border-box; cursor: pointer;" %>
     </div>
+
 
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%;">
 
@@ -58,3 +71,33 @@
     </div>
   <% end %>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const inputImagen = document.getElementById('input-imagen');
+    const previewImagen = document.getElementById('preview-imagen');
+    const placeholder = document.getElementById('preview-placeholder');
+
+    if (inputImagen) {
+      inputImagen.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        
+        if (file) {
+          // Si el usuario seleccionó un archivo, lo leemos en tiempo real
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            previewImagen.src = e.target.result;
+            previewImagen.style.display = 'block'; // Mostramos la foto
+            if (placeholder) placeholder.style.display = 'none'; // Ocultamos el icono
+          }
+          reader.readAsDataURL(file);
+        } else {
+          // Si el usuario canceló la selección, devolvemos el icono
+          previewImagen.src = '';
+          previewImagen.style.display = 'none';
+          if (placeholder) placeholder.style.display = 'block';
+        }
+      });
+    }
+  });
+</script>
