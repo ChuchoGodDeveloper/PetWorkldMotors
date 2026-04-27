@@ -63,15 +63,15 @@ class UsuariosController < ApplicationController
   end
 
   def create
-    @usuario = Usuario.new(usuario_params)
-    
-    if @usuario.save
-      # Al guardar, redirige directamente a la tabla
-      redirect_to usuarios_path
-    else
-      render :new, status: :unprocessable_entity
-    end
+  @usuario = Usuario.new(usuario_params)
+
+  if @usuario.save
+    # Redirige a la página principal (Home)
+    redirect_to principal_path, notice: 'Usuario creado exitosamente.'
+  else
+    render :new, status: :unprocessable_entity
   end
+end
 
   def update
     @usuario = Usuario.find(params[:id])
