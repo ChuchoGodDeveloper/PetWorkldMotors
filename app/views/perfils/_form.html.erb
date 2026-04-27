@@ -1,31 +1,117 @@
-<div class="neo-container" style="max-width: 600px; margin: 0 auto; padding: 30px;">
-  <h2 class="neo-title"><%= @perfil.new_record? ? 'Nuevo Perfil' : 'Editar Perfil' %></h2>
+<%# Ruta: app/views/usuarios/_form.html.erb %>
 
-  <%= form_with(model: @perfil, local: true, style: "text-align: left; margin-top: 30px;") do |form| %>
+<div class="neo-container" style="width: 100%; max-width: 700px; margin: 0 auto; padding: 40px; background-color: #e0e5ec; border-radius: 20px; box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;">
+
+  <%= form_with(model: @usuario, local: true, html: { multipart: true, id: "usuario-form" }) do |form| %>
     
-    <% if @perfil.errors.any? %>
-      <div class="error-msg" style="display: block; color: #ff4757; margin-bottom: 20px;">
-        <ul style="margin: 0; padding-left: 20px;">
-          <% @perfil.errors.full_messages.each do |message| %>
+    <% if @usuario.errors.any? %>
+      <div class="neo-alert-error" style="margin-bottom: 30px; padding: 20px; border-radius: 15px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; color: #e74c3c;">
+        <h4 style="margin-top: 0;"><%= pluralize(@usuario.errors.count, "error") %> impidieron guardar:</h4>
+        <ul style="margin-bottom: 0;">
+          <% @usuario.errors.full_messages.each do |message| %>
             <li><%= message %></li>
           <% end %>
         </ul>
       </div>
     <% end %>
 
-    <div style="margin-bottom: 25px;">
-      <%= form.label :strNombre_Perfil, "Nombre del Perfil *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px;" %>
-      <%= form.text_field :strNombre_Perfil, class: "neo-input valida-nombre", required: true, minlength: "3" %>
+    <div style="text-align: center; margin-bottom: 40px;">
+      <div id="neo-preview-container" style="width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; overflow: hidden; box-shadow: 8px 8px 16px #babecc, -8px -8px 16px #ffffff; background-color: #e0e5ec; display: flex; justify-content: center; align-items: center; border: 5px solid #e0e5ec;">
+        
+        <%# Fix para evitar el error de signed_id en registros nuevos %>
+        <% if @usuario.persisted? && @usuario.imagen_usuario.attached? %>
+          <%= image_tag @usuario.imagen_usuario, id: "preview-imagen", style: "width: 100%; height: 100%; object-fit: cover;" %>
+          <i id="preview-placeholder" class="fas fa-user" style="font-size: 60px; color: #a3b1c6; display: none;"></i>
+        <% else %>
+          <img id="preview-imagen" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+          <i id="preview-placeholder" class="fas fa-user" style="font-size: 60px; color: #a3b1c6;"></i>
+        <% end %>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <label for="input-imagen" class="neo-button" style="padding: 10px 20px; cursor: pointer; display: inline-block; border-radius: 10px; box-shadow: 4px 4px 8px #babecc, -4px -4px 8px #ffffff; color: #3498db; font-weight: bold;">
+          <i class="fas fa-camera"></i> Seleccionar Foto
+        </label>
+        <%= form.file_field :imagen_usuario, id: "input-imagen", style: "display: none;", accept: 'image/png,image/jpeg' %>
+      </div>
     </div>
 
-    <div style="margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
-      <%= form.check_box :bitAdministrador, style: "width: 20px; height: 20px;" %>
-      <%= form.label :bitAdministrador, "¿Es Administrador Total?", class: "neo-subtitle", style: "margin: 0; font-weight: bold;" %>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+      
+      <div class="neo-form-group">
+        <%= form.label :strNombreUsuario, "Nombre Completo", class: "neo-label", style: "display: block; margin-bottom: 10px; color: #4a5568;" %>
+        <%= form.text_field :strNombreUsuario, class: "neo-input valida-nombre", placeholder: "Ej. Juan Pérez", style: "width: 100%; border: none; padding: 12px; border-radius: 10px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; outline: none;" %>
+      </div>
+
+      <div class="neo-form-group">
+        <%= form.label :idPerfil, "Perfil de Acceso", class: "neo-label", style: "display: block; margin-bottom: 10px; color: #4a5568;" %>
+        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione un perfil" }, { class: "neo-input", style: "width: 100%; border: none; padding: 12px; border-radius: 10px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; outline: none; appearance: none;" } %>
+      </div>
+
+      <div class="neo-form-group">
+        <%= form.label :strCorreo, "Correo Electrónico", class: "neo-label" %>
+        <%= form.email_field :strCorreo, class: "neo-input", placeholder: "ejemplo@uttt.edu.mx" %>
+      </div>
+
+      <div class="neo-form-group">
+        <%= form.label :strNumeroCelular, "Teléfono", class: "neo-label" %>
+        <%= form.text_field :strNumeroCelular, class: "neo-input valida-telefono", placeholder: "10 dígitos" %>
+      </div>
+
+      <div class="neo-form-group">
+        <%= form.label :strPwd, "Contraseña", class: "neo-label" %>
+        <%= form.password_field :strPwd, class: "neo-input", placeholder: "Mínimo 6 caracteres" %>
+      </div>
+
+      <div class="neo-form-group">
+        <%= form.label :idEstado_Usuario, "Estado", class: "neo-label" %>
+        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 2]], {}, { class: "neo-input" } %>
+      </div>
+
     </div>
 
-    <div style="display: flex; gap: 15px; margin-top: 30px;">
-      <%= form.submit "Guardar", class: "neo-button" %>
-      <%= link_to "Cancelar", perfils_path, class: "neo-button", style: "text-decoration: none; display: flex; align-items: center; justify-content: center;" %>
+    <div style="margin-top: 40px; text-align: center;">
+      <%= form.submit "Guardar Usuario", class: "neo-button-submit", style: "padding: 15px 40px; border: none; border-radius: 12px; background: #e0e5ec; box-shadow: 6px 6px 12px #babecc, -6px -6px 12px #ffffff; color: #2ecc71; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s;" %>
     </div>
+
   <% end %>
 </div>
+
+<style>
+  .neo-label { display: block; margin-bottom: 10px; color: #4a5568; font-weight: 600; }
+  .neo-input { width: 100%; border: none; padding: 12px; border-radius: 10px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; outline: none; box-sizing: border-box; }
+  .neo-button-submit:active { box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; transform: scale(0.98); }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('input-imagen');
+  const imgPreview = document.getElementById('preview-imagen');
+  const placeholder = document.getElementById('preview-placeholder');
+
+  if (input) {
+    input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      
+      if (file) {
+        // Validar que sea imagen
+        if (!file.type.startsWith('image/')) {
+          alert('Por favor selecciona un archivo de imagen válido.');
+          return;
+        }
+
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+          // Mostrar imagen y ocultar icono
+          imgPreview.src = event.target.result;
+          imgPreview.style.display = 'block';
+          if (placeholder) placeholder.style.display = 'none';
+        };
+        
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+});
+</script>
