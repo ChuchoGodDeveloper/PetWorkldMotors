@@ -1,52 +1,56 @@
-<div class="neo-container">
+<div class="glass-container">
   
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2 class="neo-title" style="margin: 0;">Gestión de Perfiles</h2>
+    <h2 class="glass-title" style="margin: 0;">Gestión de Perfiles</h2>
     
     <% if tiene_permiso?('Perfils', :bitAgregar) %>
-      <%= link_to 'Nuevo Perfil', new_perfil_path, class: "neo-button", style: "width: auto; padding: 10px 20px; text-decoration: none;" %>
+      <%= link_to 'Nuevo Perfil', new_perfil_path, class: "glass-btn" %>
     <% end %>
   </div>
 
-  <div style="margin-bottom: 30px; text-align: left;">
-    <label class="neo-subtitle" style="display: block; margin-bottom: 10px; font-weight: bold;">BUSCAR POR NOMBRE</label>
-    <input type="text" id="buscador-input" placeholder="🔍 Buscar perfil..." class="neo-input" style="margin: 0; width: 100%; max-width: 400px;" autocomplete="off">
+  <div style="margin-bottom: 30px;">
+    <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-light);">BUSCAR POR NOMBRE</label>
+    <input type="text" id="buscador-input" placeholder="🔍 Buscar perfil..." class="glass-input" style="margin: 0; max-width: 400px;" autocomplete="off">
   </div>
 
-  <table style="width: 100%; border-collapse: collapse; text-align: left;">
-    <thead>
-      <tr style="border-bottom: 1px solid var(--bento-border);">
-        <th style="padding: 15px 10px; color: var(--text-secondary);">#</th>
-        <th style="padding: 15px 10px; color: var(--text-secondary);">NOMBRE DEL PERFIL</th>
-        <th style="padding: 15px 10px; text-align: center; color: var(--text-secondary);">ADMINISTRADOR</th>
-        <th style="padding: 15px 10px; text-align: center; color: var(--text-secondary);">ACCIONES</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @perfils.each do |perfil| %>
-        <tr class="fila-busqueda" data-search="<%= perfil.strNombre_Perfil.downcase %>" style="border-bottom: 1px solid var(--bento-border);">
-          <td style="padding: 15px 10px; color: var(--text-secondary);"><%= perfil.id %></td>
-          <td style="padding: 15px 10px; font-weight: bold; color: var(--text-primary);"><%= perfil.strNombre_Perfil %></td>
-          <td style="padding: 15px 10px; text-align: center; color: var(--text-secondary);">
-            <%= perfil.bitAdministrador ? 'Sí' : 'No' %>
-          </td>
-          <td style="padding: 15px 10px; text-align: center;">
-            <div style="display: flex; gap: 10px; justify-content: center;">
-              
-              <% if tiene_permiso?('Perfils', :bitEditar) %>
-                <%= link_to 'Editar', edit_perfil_path(perfil), class: "neo-button", style: "width: auto; padding: 8px 15px; text-decoration: none;" %>
-              <% end %>
-
-              <% if tiene_permiso?('Perfils', :bitEliminar) %>
-                <%= button_to 'Eliminar', perfil_path(perfil), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button", style: "width: auto; padding: 8px 15px; color: var(--danger); border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.1);" %>
-              <% end %>
-
-            </div>
-          </td>
+  <div style="background: rgba(255,255,255,0.3); border-radius: 16px; padding: 20px; overflow-x: auto; border: 1px solid var(--glass-border);">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>NOMBRE DEL PERFIL</th>
+          <th style="text-align: center;">ADMINISTRADOR</th>
+          <th style="text-align: center;">ACCIONES</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @perfils.each do |perfil| %>
+          <tr class="fila-busqueda" data-search="<%= perfil.strNombre_Perfil.downcase %>">
+            <td style="color: var(--text-light);"><%= perfil.id %></td>
+            <td style="font-weight: bold;"><%= perfil.strNombre_Perfil %></td>
+            <td style="text-align: center;">
+              <span style="padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; background: <%= perfil.bitAdministrador ? 'rgba(37, 99, 235, 0.1)' : 'rgba(255, 255, 255, 0.4)' %>; color: <%= perfil.bitAdministrador ? 'var(--accent)' : 'var(--text-light)' %>;">
+                <%= perfil.bitAdministrador ? 'Sí' : 'No' %>
+              </span>
+            </td>
+            <td style="text-align: center;">
+              <div style="display: flex; gap: 10px; justify-content: center;">
+                
+                <% if tiene_permiso?('Perfils', :bitEditar) %>
+                  <%= link_to 'Editar', edit_perfil_path(perfil), class: "glass-btn glass-btn-outline", style: "padding: 8px 16px;" %>
+                <% end %>
+
+                <% if tiene_permiso?('Perfils', :bitEliminar) %>
+                  <%= button_to 'Eliminar', perfil_path(perfil), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "glass-btn glass-btn-danger", style: "padding: 8px 16px;" %>
+                <% end %>
+
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
   <div style="margin-top: 20px;">
     <%= paginate @perfils if defined?(paginate) %>

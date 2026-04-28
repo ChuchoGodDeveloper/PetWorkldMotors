@@ -1,9 +1,9 @@
-<div class="neo-container" style="width: 100%; max-width: 700px; margin: 0 auto; padding: 40px;">
+<div class="glass-container" style="width: 100%; max-width: 700px; margin: 0 auto;">
 
   <%= form_with(model: @perfil, local: true, html: { id: "perfil-form" }) do |form| %>
     
     <% if @perfil.errors.any? %>
-      <div style="margin-bottom: 30px; padding: 20px; border-radius: 15px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: var(--danger);">
+      <div style="background: rgba(225, 29, 72, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 20px; border-radius: 16px; margin-bottom: 30px;">
         <h2 style="margin-top: 0; font-size: 1.1rem;"><%= pluralize(@perfil.errors.count, "error") %> impidieron guardar este perfil:</h2>
         <ul style="margin-bottom: 0;">
           <% @perfil.errors.full_messages.each do |msg| %>
@@ -13,21 +13,21 @@
       </div>
     <% end %>
 
-    <div style="margin-bottom: 25px;">
-      <label class="neo-subtitle" style="display: block; margin-bottom: 10px; font-weight: bold; color: var(--text-primary);">Nombre del Perfil</label>
-      <%= form.text_field :strNombre_Perfil, class: "neo-input", style: "width: 100%; box-sizing: border-box;", placeholder: "Ej. Administrador, Vendedor...", required: true %>
+    <div style="background: rgba(255, 255, 255, 0.3); padding: 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid var(--glass-border);">
+      <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-dark);">Nombre del Perfil</label>
+      <%= form.text_field :strNombre_Perfil, class: "glass-input", style: "margin-bottom: 0;", placeholder: "Ej. Administrador, Vendedor...", required: true %>
     </div>
 
-    <div style="margin-bottom: 30px;">
-      <label style="display: flex; align-items: center; gap: 10px; font-weight: bold; cursor: pointer; color: var(--text-primary);">
-        <%= form.check_box :bitAdministrador, style: "width: 20px; height: 20px; accent-color: var(--accent);" %>
+    <div style="background: rgba(255, 255, 255, 0.3); padding: 20px 25px; border-radius: 16px; margin-bottom: 30px; border: 1px solid var(--glass-border);">
+      <label style="display: flex; align-items: center; gap: 12px; font-weight: 600; cursor: pointer; color: var(--text-dark); margin: 0;">
+        <%= form.check_box :bitAdministrador, style: "width: 22px; height: 22px; accent-color: var(--accent); cursor: pointer;" %>
         ¿Este perfil tiene privilegios de Administrador?
       </label>
     </div>
 
-    <div style="text-align: right; margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
-      <%= link_to 'Cancelar', perfils_path, class: "neo-button", style: "padding: 10px 20px; text-decoration: none; width: auto; background: transparent; border: 1px solid var(--bento-border); color: var(--text-secondary);" %>
-      <%= form.submit "Guardar Perfil", class: "neo-button", style: "padding: 10px 20px; cursor: pointer; border: none; width: auto; color: var(--accent);" %>
+    <div style="display: flex; justify-content: flex-end; gap: 15px;">
+      <%= link_to 'Cancelar', perfils_path, class: "glass-btn glass-btn-outline" %>
+      <%= form.submit "Guardar Perfil", class: "glass-btn" %>
     </div>
 
   <% end %>
