@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PetWorld</title>
+    <title>Sistema Usuarios</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -10,11 +10,13 @@
   </head>
   <body>
     <% unless request.path == '/login' || request.path == '/' %>
-      <div class="neo-sidebar" id="sidebar-menu">
-        <div class="neo-title" style="font-size: 20px; text-align: center; margin-bottom: 30px;">PetWorld</div>
+      <header class="neo-topbar" id="topbar-menu">
+        <div class="neo-title" style="font-size: 20px; margin: 0; white-space: nowrap;">Sistema Usuarios</div>
+        
         <div id="dinamic-nav"></div>
-        <button id="btn-logout" class="neo-button" style="margin-top: auto; color: var(--danger); background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">Cerrar Sesión</button>
-      </div>
+        
+        <button id="btn-logout" class="neo-button" style="width: auto; color: var(--danger); background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px 20px; margin-left: 20px;">Cerrar Sesión</button>
+      </header>
     <% end %>
 
     <div class="<%= 'neo-content' unless request.path == '/login' || request.path == '/' %>" 
@@ -38,9 +40,14 @@
 
           const menuData = await res.json();
           for (const [padre, datosPadre] of Object.entries(menuData)) {
+            
+            // Contenedor relativo para alojar el botón y su dropdown
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+
             const btn = document.createElement('button');
             btn.className = 'menu-item';
-            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i><span>${padre}</span></div><span>▼</span>`;
+            btn.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i><span>${padre}</span></div><span style="margin-left: 10px; font-size: 0.8rem;">▼</span>`;
             
             const submenu = document.createElement('div');
             submenu.className = 'submenu';
@@ -53,15 +60,29 @@
               submenu.appendChild(link);
             });
 
-            btn.onclick = () => {
+            // Lógica para desplegar menú y cerrar otros
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              
+              // Cerrar los demás submenús abiertos
+              document.querySelectorAll('.submenu').forEach(sm => {
+                if (sm !== submenu) sm.style.display = 'none';
+              });
+
               const isOculto = submenu.style.display === 'none' || submenu.style.display === '';
               submenu.style.display = isOculto ? 'flex' : 'none';
-              btn.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><i class="${datosPadre.icono}" style="width: 20px; text-align: center;"></i><span>${padre}</span></div><span>${isOculto ? '▲' : '▼'}</span>`;
             };
 
-            nav.appendChild(btn);
-            nav.appendChild(submenu);
+            wrapper.appendChild(btn);
+            wrapper.appendChild(submenu);
+            nav.appendChild(wrapper);
           }
+
+          // Cerrar dropdowns si se hace clic en cualquier otra parte de la pantalla
+          document.addEventListener('click', () => {
+            document.querySelectorAll('.submenu').forEach(sm => sm.style.display = 'none');
+          });
+
         } catch (error) {
           console.error(error);
           localStorage.removeItem('jwt_token');

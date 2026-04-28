@@ -17,19 +17,64 @@ body {
   color: var(--text-primary);
   margin: 0;
   display: flex;
+  flex-direction: column; /* Cambiado a columna para apilar el topbar arriba */
   min-height: 100vh;
 }
 
-/* Panel Lateral (Sidebar) */
-.neo-sidebar {
-  width: 250px;
+/* Reemplaza .neo-sidebar con esto */
+.neo-topbar {
+  width: 100%;
   background-color: var(--bento-surface);
-  border-right: 1px solid var(--bento-border);
-  padding: 20px;
+  border-bottom: 1px solid var(--bento-border);
+  padding: 15px 40px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Separa el logo del menú y botón de salida */
+  box-sizing: border-box;
   z-index: 100;
-  /* Eliminamos el box-shadow ruidoso del neumorfismo */
+}
+
+/* Contenedor del menú dinámico en horizontal */
+#dinamic-nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex: 1;
+  margin-left: 40px;
+}
+
+/* Modificación a menu-item para el Topbar */
+.menu-item {
+  width: auto; /* Ya no ocupa el 100% */
+  background-color: transparent; 
+  border: 1px solid transparent; 
+  padding: 10px 15px; 
+  border-radius: 12px;
+  color: var(--text-primary); 
+  font-weight: bold; 
+  cursor: pointer; 
+  margin-bottom: 0; /* Eliminado el margen inferior */
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+/* Submenú desplegable (Dropdown flotante) */
+.submenu { 
+  display: none; 
+  flex-direction: column; 
+  position: absolute; /* Flota sobre el contenido */
+  top: 100%; 
+  left: 0;
+  background-color: var(--bento-surface);
+  border: 1px solid var(--bento-border);
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 220px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  z-index: 101;
+  margin-top: 10px;
 }
 
 /* Área de Contenido Principal */
