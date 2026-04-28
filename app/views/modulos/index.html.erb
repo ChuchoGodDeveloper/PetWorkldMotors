@@ -2,7 +2,11 @@
   
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
     <h2 class="neo-title" style="margin: 0;">Gestión de Módulos</h2>
-    <%= link_to 'Nuevo Módulo', new_modulo_path, class: "neo-button", style: "width: auto; padding: 10px 20px; text-decoration: none;" %>
+    
+    <%# Validación para el botón de Agregar %>
+    <% if tiene_permiso?('Modulos', :bitAgregar) %>
+      <%= link_to 'Nuevo Módulo', new_modulo_path, class: "neo-button", style: "width: auto; padding: 10px 20px; text-decoration: none;" %>
+    <% end %>
   </div>
 
   <div style="margin-bottom: 30px; text-align: left;">
@@ -25,8 +29,17 @@
           <td style="padding: 15px 10px; font-weight: bold; color: #4a4a4a;"><%= modulo.strNombreModulo %></td>
           <td style="padding: 15px 10px; text-align: center;">
             <div style="display: flex; gap: 10px; justify-content: center;">
-              <%= link_to 'Editar', edit_modulo_path(modulo), class: "neo-button", style: "width: auto; padding: 8px 15px; text-decoration: none;" %>
-              <%= button_to 'Eliminar', modulo_path(modulo), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button", style: "width: auto; padding: 8px 15px; color: #ff4757;" %>
+              
+              <%# Validación para el botón de Editar %>
+              <% if tiene_permiso?('Modulos', :bitEditar) %>
+                <%= link_to 'Editar', edit_modulo_path(modulo), class: "neo-button", style: "width: auto; padding: 8px 15px; text-decoration: none;" %>
+              <% end %>
+
+              <%# Validación para el botón de Eliminar %>
+              <% if tiene_permiso?('Modulos', :bitEliminar) %>
+                <%= button_to 'Eliminar', modulo_path(modulo), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button", style: "width: auto; padding: 8px 15px; color: #ff4757;" %>
+              <% end %>
+
             </div>
           </td>
         </tr>
