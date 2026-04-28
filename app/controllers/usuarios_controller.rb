@@ -2,6 +2,7 @@ class UsuariosController < ApplicationController
   skip_before_action :verify_authenticity_token
   
   # Filtros de seguridad para bloquear el acceso directo por URL
+  before_action :verificar_acceso_consulta, only: [:index, :show]
   before_action :verificar_permiso_editar, only: [:edit, :update]
   before_action :verificar_permiso_eliminar, only: [:destroy]
 
@@ -70,7 +71,6 @@ class UsuariosController < ApplicationController
     @usuario = Usuario.new(usuario_params)
 
     if @usuario.save
-      # Redirige a la página principal (Home)
       redirect_to principal_path, notice: 'Usuario creado exitosamente.'
     else
       render :new, status: :unprocessable_entity
@@ -84,7 +84,6 @@ class UsuariosController < ApplicationController
     p.delete(:strPwd) if p[:strPwd].blank?
     
     if @usuario.update(p)
-      # Al actualizar, redirige directamente a la tabla
       redirect_to usuarios_path
     else
       render :edit, status: :unprocessable_entity
@@ -105,6 +104,12 @@ class UsuariosController < ApplicationController
   end
 
   # --- MÉTODOS DE SEGURIDAD ---
+  def verificar_acceso_consulta
+    unless tiene_permiso?('Usuarios', :bitConsulta)
+      redirect_to principal_path, alert: 'No tienes permiso para ver los usuarios.'
+    end
+  end
+
   def verificar_permiso_editar
     unless tiene_permiso?('Usuarios', :bitEditar)
       redirect_to usuarios_path, alert: 'No tienes permiso para editar usuarios.'

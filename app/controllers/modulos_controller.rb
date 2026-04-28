@@ -1,6 +1,8 @@
 class ModulosController < ApplicationController
   skip_before_action :verify_authenticity_token
   
+  # Filtros de seguridad para bloquear el acceso directo por URL
+  before_action :verificar_acceso_consulta, only: [:index, :show]
   before_action :verificar_permiso_editar, only: [:edit, :update]
   before_action :verificar_permiso_eliminar, only: [:destroy]
 
@@ -71,6 +73,13 @@ class ModulosController < ApplicationController
         a.strIcono_Apartado = params[:nuevo_apartado_icono] || 'fas fa-folder'
       end
       @modulo.apartado_id = nuevo_apartado.id
+    end
+  end
+
+  # --- MÉTODOS DE SEGURIDAD ---
+  def verificar_acceso_consulta
+    unless tiene_permiso?('Modulos', :bitConsulta)
+      redirect_to principal_path, alert: 'No tienes permiso para ver los módulos.'
     end
   end
 

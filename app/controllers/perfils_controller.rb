@@ -1,20 +1,20 @@
 class PerfilsController < ApplicationController
-  skip_before_action :verify_authenticity_token # Permitir peticiones Fetch
+  skip_before_action :verify_authenticity_token
 
   # Filtros de seguridad para bloquear el acceso directo por URL
+  before_action :verificar_acceso_consulta, only: [:index, :show]
   before_action :verificar_permiso_editar, only: [:edit, :update]
   before_action :verificar_permiso_eliminar, only: [:destroy]
 
   def index
     if params[:q].present?
-      # arel_table maneja automáticamente las comillas exactas que exige PostgreSQL
       @perfils = Perfil.where(Perfil.arel_table[:strNombre_Perfil].matches("%#{params[:q]}%")).page(params[:page]).per(5)
     else
       @perfils = Perfil.page(params[:page]).per(5)
     end
     
     respond_to do |format|
-      format.html # Renderiza index.html.erb
+      format.html
       format.json { 
         render json: { 
           data: @perfils, 
@@ -29,7 +29,6 @@ class PerfilsController < ApplicationController
     render json: @perfil
   end
 
-  # --- MÉTODOS PARA RENDERIZAR EL FORMULARIO HTML ---
   def new
     @perfil = Perfil.new
   end
@@ -38,7 +37,6 @@ class PerfilsController < ApplicationController
     @perfil = Perfil.find(params[:id])
   end
 
-  # --- MÉTODOS ADAPTADOS PARA HTML Y JSON ---
   def create
     @perfil = Perfil.new(perfil_params)
     
@@ -84,6 +82,12 @@ class PerfilsController < ApplicationController
   end
 
   # --- MÉTODOS DE SEGURIDAD ---
+  def verificar_acceso_consulta
+    unless tiene_permiso?('Perfils', :bitConsulta)
+      redirect_to principal_path, alert: 'No tienes permiso para ver los perfiles.'
+    end
+  end
+
   def verificar_permiso_editar
     unless tiene_permiso?('Perfils', :bitEditar)
       redirect_to perfils_path, alert: 'No tienes permiso para editar perfiles.'
