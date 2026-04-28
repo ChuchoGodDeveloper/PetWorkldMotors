@@ -1,243 +1,173 @@
-/* app/assets/stylesheets/application.css */
-
 :root {
-  /* Paleta Bento Dark */
-  --bg-base: #0f172a;       /* Fondo global (más oscuro) */
-  --bento-surface: #1e293b; /* Fondo de contenedores/tarjetas */
-  --bento-border: #334155;  /* Bordes sutiles */
-  --text-primary: #f8fafc;  /* Textos principales */
-  --text-secondary: #94a3b8;/* Textos secundarios */
-  --accent: #3b82f6;        /* Azul interactivo */
-  --danger: #ef4444;        /* Errores */
+  --bg-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+  --glass-surface: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --text-dark: #1e293b;
+  --text-light: #475569;
+  --accent: #2563eb;
+  --danger: #e11d48;
 }
 
 body {
-  background-color: var(--bg-base);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: var(--text-primary);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  font-family: system-ui, -apple-system, sans-serif;
   margin: 0;
-  display: flex;
-  flex-direction: column; /* Cambiado a columna para apilar el topbar arriba */
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Reemplaza .neo-sidebar con esto */
-.neo-topbar {
-  width: 100%;
-  background-color: var(--bento-surface);
-  border-bottom: 1px solid var(--bento-border);
+/* Topbar de Cristal Flotante */
+.glass-topbar {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
   padding: 15px 40px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: space-between; /* Separa el logo del menú y botón de salida */
-  box-sizing: border-box;
-  z-index: 100;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
-/* Contenedor del menú dinámico en horizontal */
-#dinamic-nav {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  flex: 1;
-  margin-left: 40px;
-}
-
-/* Modificación a menu-item para el Topbar */
-.menu-item {
-  width: auto; /* Ya no ocupa el 100% */
-  background-color: transparent; 
-  border: 1px solid transparent; 
-  padding: 10px 15px; 
-  border-radius: 12px;
-  color: var(--text-primary); 
-  font-weight: bold; 
-  cursor: pointer; 
-  margin-bottom: 0; /* Eliminado el margen inferior */
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-  transition: all 0.2s ease;
-}
-
-/* Submenú desplegable (Dropdown flotante) */
-.submenu { 
-  display: none; 
-  flex-direction: column; 
-  position: absolute; /* Flota sobre el contenido */
-  top: 100%; 
-  left: 0;
-  background-color: var(--bento-surface);
-  border: 1px solid var(--bento-border);
-  border-radius: 12px;
-  padding: 10px;
-  min-width: 220px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-  z-index: 101;
-  margin-top: 10px;
-}
-
-/* Área de Contenido Principal */
-.neo-content {
+/* Área de Contenido */
+.glass-content {
   flex: 1;
   padding: 40px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-y: auto;
 }
 
-/* Contenedor estándar para vistas (Ahora es una Tarjeta Bento Principal) */
-.neo-container {
-  background-color: var(--bento-surface);
-  border: 1px solid var(--bento-border);
-  border-radius: 24px;
+/* Contenedor Principal Transparente */
+.glass-container {
+  background: var(--glass-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
   padding: 40px;
   width: 100%;
-  text-align: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); /* Sombra moderna sutil */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
-/* Elementos comunes */
-.neo-title { 
-  font-size: 24px; 
-  font-weight: bold; 
-  margin-bottom: 10px; 
-  color: var(--text-primary); 
-}
+/* Tipografía */
+.glass-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: var(--text-dark); }
+.glass-subtitle { font-size: 14px; margin-bottom: 30px; color: var(--text-light); }
 
-.neo-subtitle { 
-  font-size: 14px; 
-  margin-bottom: 30px; 
-  color: var(--text-secondary); 
-}
-
-.neo-input {
-  width: 100%; 
-  background: var(--bg-base); 
-  border: 1px solid var(--bento-border); 
-  color: var(--text-primary); 
-  padding: 15px; 
+/* Inputs y Botones */
+.glass-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--glass-border);
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: var(--text-dark);
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
   margin-bottom: 20px;
-  border-radius: 12px; 
-  outline: none; 
-  box-sizing: border-box;
-  transition: border-color 0.2s ease;
 }
 
-.neo-input:focus {
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.9);
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-.neo-button {
-  width: 100%; 
-  background: rgba(59, 130, 246, 0.1); /* Fondo transparente azulado */
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  color: var(--accent); 
-  padding: 15px; 
+.glass-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 14px 24px;
   border-radius: 12px;
-  font-weight: bold; 
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.neo-button:hover { 
-  background: var(--accent); 
-  color: #fff; 
-  transform: translateY(-2px);
-}
-
-.neo-button:active { 
-  transform: translateY(0); 
-}
-
-.error-msg { 
-  color: var(--danger); 
-  font-size: 13px; 
-  margin-bottom: 15px; 
-  display: none; 
-}
-
-/* Menú Desplegable (Adaptado para Bento Oscuro) */
-.menu-item {
-  width: 100%; 
-  background-color: transparent; 
-  border: 1px solid transparent; 
-  padding: 12px 15px; 
-  border-radius: 12px;
-  color: var(--text-primary); 
-  font-weight: bold; 
-  cursor: pointer; 
-  margin-bottom: 10px; 
-  text-align: left;
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-  transition: all 0.2s ease;
-}
-
-.menu-item:hover, .menu-item:active { 
-  background-color: var(--bg-base);
-  border-color: var(--bento-border);
-}
-
-.submenu { 
-  display: none; 
-  flex-direction: column; 
-  padding-left: 15px; 
-  margin-bottom: 15px; 
-}
-
-.submenu a { 
-  text-decoration: none; 
-  color: var(--text-secondary); 
-  padding: 8px 0; 
-  font-size: 14px; 
-  display: block; 
-  transition: 0.2s; 
-}
-
-.submenu a:hover { 
-  color: var(--accent); 
-  padding-left: 5px; 
-}
-
-/* Paginación (Kaminari en modo Bento) */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 0;
-}
-
-.pagination > span > a,
-.pagination > span.current,
-.pagination > span.gap {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  min-width: 20px;
-  padding: 0 15px;
-  border-radius: 10px;
-  background-color: var(--bg-base);
-  border: 1px solid var(--bento-border);
-  color: var(--text-secondary);
+  transition: all 0.2s;
   text-decoration: none;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
-.pagination > span > a:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.glass-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
-.pagination > span.current {
-  background-color: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+.glass-btn-danger {
+  background: var(--danger);
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
 }
+
+.glass-btn-danger:hover { box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4); }
+
+.glass-btn-outline {
+  background: transparent;
+  color: var(--text-dark);
+  border: 1px solid var(--text-light);
+  box-shadow: none;
+}
+
+.glass-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+
+/* Menú Dinámico */
+#dinamic-nav { display: flex; gap: 15px; align-items: center; flex: 1; margin-left: 40px; }
+
+.menu-item {
+  background: transparent;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.menu-item:hover { background: rgba(255, 255, 255, 0.4); }
+
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 220px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  margin-top: 15px;
+  z-index: 101;
+}
+
+.submenu a {
+  text-decoration: none;
+  color: var(--text-dark);
+  padding: 10px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.submenu a:hover { background: rgba(255,255,255,0.9); color: var(--accent); }
+
+/* Tablas */
+table { width: 100%; border-collapse: collapse; }
+th { padding: 16px; text-align: left; color: var(--text-light); border-bottom: 2px solid var(--glass-border); font-size: 0.85rem; text-transform: uppercase; }
+td { padding: 16px; border-bottom: 1px solid var(--glass-border); color: var(--text-dark); }
+tr:last-child td { border-bottom: none; }
