@@ -2,43 +2,43 @@
   <div style="text-align: center; margin-bottom: 20px;">
     <h2 class="neo-title">PetWorld Motors</h2>
     <div class="neo-subtitle">Panel de Administración</div>
-    <p style="color: #666;">Bienvenido a tu espacio de trabajo.</p>
+    <p style="color: var(--text-secondary);">Bienvenido a tu espacio de trabajo.</p>
   </div>
 
-  <div id="perfil-usuario" style="display: none; padding: 20px; border-top: 2px solid rgba(163,177,198,0.3); margin-top: 20px;">
-    <h3 class="neo-subtitle" style="text-align: center; margin-bottom: 20px; color: #333; font-weight: bold;">Mis Datos Generales</h3>
+  <div id="perfil-usuario" style="display: none; padding: 20px; border-top: 1px solid var(--bento-border); margin-top: 20px;">
+    <h3 class="neo-subtitle" style="text-align: center; margin-bottom: 20px; color: var(--text-primary); font-weight: bold;">Mis Datos Generales</h3>
     
     <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; align-items: flex-start;">
       
       <div style="text-align: center;">
-        <img id="user-img" src="" alt="Foto de perfil" style="display: none; width: 120px; height: 120px; border-radius: 50%; object-fit: cover; box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8); margin-bottom: 10px;">
-        <div id="user-no-img" style="display: flex; align-items: center; justify-content: center; width: 120px; height: 120px; border-radius: 50%; background-color: #e0e5ec; color: #999; box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.7), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.8); margin-bottom: 10px; font-size: 0.9rem;">
+        <img id="user-img" src="" alt="Foto de perfil" style="display: none; width: 120px; height: 120px; border-radius: 30px; object-fit: cover; border: 2px solid var(--bento-border); margin-bottom: 10px;">
+        <div id="user-no-img" style="display: flex; align-items: center; justify-content: center; width: 120px; height: 120px; border-radius: 30px; background-color: var(--bg-base); border: 1px dashed var(--bento-border); color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9rem;">
           Sin Imagen
         </div>
-        <span id="user-estado" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: #2e8b57; background: #e0e5ec; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.7), inset -3px -3px 6px rgba(255, 255, 255, 0.8);">
+        <span id="user-estado" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: var(--success); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
           Cargando...
         </span>
       </div>
 
       <div style="flex-grow: 1; min-width: 250px; display: grid; grid-template-columns: 1fr; gap: 15px;">
         <div class="neo-input" style="padding: 15px; margin: 0; background: transparent; pointer-events: none;">
-          <label style="display: block; font-size: 0.8rem; color: #999; font-weight: bold; text-transform: uppercase;">Usuario</label>
-          <div id="user-nombre" style="font-size: 1.1rem; color: #333; font-weight: bold;">Cargando...</div>
+          <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: bold; text-transform: uppercase;">Usuario</label>
+          <div id="user-nombre" style="font-size: 1.1rem; color: var(--text-primary); font-weight: bold;">Cargando...</div>
         </div>
         
         <div class="neo-input" style="padding: 15px; margin: 0; background: transparent; pointer-events: none;">
-          <label style="display: block; font-size: 0.8rem; color: #999; font-weight: bold; text-transform: uppercase;">Perfil de Acceso</label>
-          <div id="user-perfil" style="font-size: 1.1rem; color: #333;">Cargando...</div>
+          <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: bold; text-transform: uppercase;">Perfil de Acceso</label>
+          <div id="user-perfil" style="font-size: 1.1rem; color: var(--text-primary);">Cargando...</div>
         </div>
 
         <div class="neo-input" style="padding: 15px; margin: 0; background: transparent; pointer-events: none;">
-          <label style="display: block; font-size: 0.8rem; color: #999; font-weight: bold; text-transform: uppercase;">Correo Electrónico</label>
-          <div id="user-correo" style="font-size: 1.1rem; color: #333;">Cargando...</div>
+          <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: bold; text-transform: uppercase;">Correo Electrónico</label>
+          <div id="user-correo" style="font-size: 1.1rem; color: var(--text-primary);">Cargando...</div>
         </div>
 
         <div class="neo-input" style="padding: 15px; margin: 0; background: transparent; pointer-events: none;">
-          <label style="display: block; font-size: 0.8rem; color: #999; font-weight: bold; text-transform: uppercase;">Teléfono Celular</label>
-          <div id="user-celular" style="font-size: 1.1rem; color: #333;">Cargando...</div>
+          <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); font-weight: bold; text-transform: uppercase;">Teléfono Celular</label>
+          <div id="user-celular" style="font-size: 1.1rem; color: var(--text-primary);">Cargando...</div>
         </div>
       </div>
 
@@ -48,7 +48,6 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    // Lee el token que guardaste en el login
     const token = localStorage.getItem('jwt_token');
 
     if (!token) {
@@ -56,7 +55,6 @@
       return;
     }
 
-    // Consulta los datos a tu backend
     fetch('/api/perfil', {
       method: 'GET',
       headers: {
@@ -67,23 +65,21 @@
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        // Muestra el contenedor
         document.getElementById('perfil-usuario').style.display = 'block';
         
-        // Asigna los textos
         document.getElementById('user-nombre').textContent = data.nombre;
         document.getElementById('user-correo').textContent = data.correo;
         document.getElementById('user-perfil').textContent = data.perfil;
         document.getElementById('user-celular').textContent = data.celular;
         
-        // Ajusta el estado (Activo/Inactivo)
         const estadoSpan = document.getElementById('user-estado');
         estadoSpan.textContent = data.estado;
         if(data.estado !== 'Activo') {
-          estadoSpan.style.color = '#7f8c8d'; // Gris si está inactivo
+          estadoSpan.style.color = 'var(--text-secondary)'; 
+          estadoSpan.style.background = 'transparent';
+          estadoSpan.style.borderColor = 'var(--text-secondary)';
         }
 
-        // Asigna la imagen si existe
         if (data.imagen_url) {
           const imgEl = document.getElementById('user-img');
           imgEl.src = data.imagen_url;

@@ -13,7 +13,7 @@
       <div class="neo-sidebar" id="sidebar-menu">
         <div class="neo-title" style="font-size: 20px; text-align: center; margin-bottom: 30px;">PetWorld</div>
         <div id="dinamic-nav"></div>
-        <button id="btn-logout" class="neo-button" style="margin-top: auto; color: #ff4757; padding: 10px;">Cerrar Sesión</button>
+        <button id="btn-logout" class="neo-button" style="margin-top: auto; color: var(--danger); background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">Cerrar Sesión</button>
       </div>
     <% end %>
 
@@ -25,7 +25,6 @@
     <% unless request.path == '/login' || request.path == '/' %>
     <script>
       document.addEventListener('DOMContentLoaded', async () => {
-        // --- 1. LÓGICA DEL MENÚ LATERAL ---
         const token = localStorage.getItem('jwt_token');
         if (!token) {
           window.location.replace('/login');
@@ -74,7 +73,6 @@
           window.location.replace('/login');
         });
 
-        // --- 2. LÓGICA DE VALIDACIONES GLOBALES ---
         document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]').forEach(input => {
           if (!input.hasAttribute('maxlength')) input.setAttribute('maxlength', '70');
         });

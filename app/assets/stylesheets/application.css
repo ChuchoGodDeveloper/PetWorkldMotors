@@ -1,8 +1,20 @@
 /* app/assets/stylesheets/application.css */
+
+:root {
+  /* Paleta Bento Dark */
+  --bg-base: #0f172a;       /* Fondo global (más oscuro) */
+  --bento-surface: #1e293b; /* Fondo de contenedores/tarjetas */
+  --bento-border: #334155;  /* Bordes sutiles */
+  --text-primary: #f8fafc;  /* Textos principales */
+  --text-secondary: #94a3b8;/* Textos secundarios */
+  --accent: #3b82f6;        /* Azul interactivo */
+  --danger: #ef4444;        /* Errores */
+}
+
 body {
-  background-color: #e0e5ec;
+  background-color: var(--bg-base);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #4a4a4a;
+  color: var(--text-primary);
   margin: 0;
   display: flex;
   min-height: 100vh;
@@ -11,12 +23,13 @@ body {
 /* Panel Lateral (Sidebar) */
 .neo-sidebar {
   width: 250px;
-  background-color: #e0e5ec;
-  box-shadow: 9px 0px 16px rgb(163,177,198,0.6);
+  background-color: var(--bento-surface);
+  border-right: 1px solid var(--bento-border);
   padding: 20px;
   display: flex;
   flex-direction: column;
   z-index: 100;
+  /* Eliminamos el box-shadow ruidoso del neumorfismo */
 }
 
 /* Área de Contenido Principal */
@@ -29,46 +42,122 @@ body {
   overflow-y: auto;
 }
 
-/* Contenedor estándar para vistas */
+/* Contenedor estándar para vistas (Ahora es una Tarjeta Bento Principal) */
 .neo-container {
-  background-color: #e0e5ec;
-  border-radius: 20px;
-  box-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+  background-color: var(--bento-surface);
+  border: 1px solid var(--bento-border);
+  border-radius: 24px;
   padding: 40px;
   width: 100%;
   text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2); /* Sombra moderna sutil */
 }
 
 /* Elementos comunes */
-.neo-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #333; }
-.neo-subtitle { font-size: 14px; margin-bottom: 30px; color: #666; }
+.neo-title { 
+  font-size: 24px; 
+  font-weight: bold; 
+  margin-bottom: 10px; 
+  color: var(--text-primary); 
+}
+
+.neo-subtitle { 
+  font-size: 14px; 
+  margin-bottom: 30px; 
+  color: var(--text-secondary); 
+}
+
 .neo-input {
-  width: 100%; border: none; outline: none; background: #e0e5ec; padding: 15px; margin-bottom: 20px;
-  border-radius: 10px; box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8);
+  width: 100%; 
+  background: var(--bg-base); 
+  border: 1px solid var(--bento-border); 
+  color: var(--text-primary); 
+  padding: 15px; 
+  margin-bottom: 20px;
+  border-radius: 12px; 
+  outline: none; 
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
 }
+
+.neo-input:focus {
+  border-color: var(--accent);
+}
+
 .neo-button {
-  width: 100%; border: none; outline: none; background-color: #e0e5ec; padding: 15px; border-radius: 10px;
-  color: #333; font-weight: bold; cursor: pointer;
-  box-shadow: 6px 6px 10px 0 rgba(163, 177, 198, 0.7), -6px -6px 10px 0 rgba(255, 255, 255, 0.8); transition: all 0.2s;
+  width: 100%; 
+  background: rgba(59, 130, 246, 0.1); /* Fondo transparente azulado */
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: var(--accent); 
+  padding: 15px; 
+  border-radius: 12px;
+  font-weight: bold; 
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-.neo-button:active { box-shadow: inset 6px 6px 10px 0 rgba(163, 177, 198, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8); }
-.error-msg { color: #ff4757; font-size: 13px; margin-bottom: 15px; display: none; }
 
-/* Menú Desplegable */
+.neo-button:hover { 
+  background: var(--accent); 
+  color: #fff; 
+  transform: translateY(-2px);
+}
+
+.neo-button:active { 
+  transform: translateY(0); 
+}
+
+.error-msg { 
+  color: var(--danger); 
+  font-size: 13px; 
+  margin-bottom: 15px; 
+  display: none; 
+}
+
+/* Menú Desplegable (Adaptado para Bento Oscuro) */
 .menu-item {
-  width: 100%; border: none; outline: none; background-color: #e0e5ec; padding: 12px 15px; border-radius: 10px;
-  color: #333; font-weight: bold; cursor: pointer; margin-bottom: 10px; text-align: left;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
+  width: 100%; 
+  background-color: transparent; 
+  border: 1px solid transparent; 
+  padding: 12px 15px; 
+  border-radius: 12px;
+  color: var(--text-primary); 
+  font-weight: bold; 
+  cursor: pointer; 
+  margin-bottom: 10px; 
+  text-align: left;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  transition: all 0.2s ease;
 }
-.menu-item:active { box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.7), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.8); }
 
-.submenu { display: none; flex-direction: column; padding-left: 15px; margin-bottom: 15px; }
-.submenu a { text-decoration: none; color: #666; padding: 8px 0; font-size: 14px; display: block; transition: 0.2s; }
-.submenu a:hover { color: #333; font-weight: bold; padding-left: 5px; }
+.menu-item:hover, .menu-item:active { 
+  background-color: var(--bg-base);
+  border-color: var(--bento-border);
+}
 
-/* Paginación Neomórfica (Kaminari) */
+.submenu { 
+  display: none; 
+  flex-direction: column; 
+  padding-left: 15px; 
+  margin-bottom: 15px; 
+}
+
+.submenu a { 
+  text-decoration: none; 
+  color: var(--text-secondary); 
+  padding: 8px 0; 
+  font-size: 14px; 
+  display: block; 
+  transition: 0.2s; 
+}
+
+.submenu a:hover { 
+  color: var(--accent); 
+  padding-left: 5px; 
+}
+
+/* Paginación (Kaminari en modo Bento) */
 .pagination {
   display: flex;
   justify-content: center;
@@ -78,7 +167,6 @@ body {
   padding: 0;
 }
 
-/* Estilo para los botones (enlaces) y la página actual */
 .pagination > span > a,
 .pagination > span.current,
 .pagination > span.gap {
@@ -89,22 +177,22 @@ body {
   min-width: 20px;
   padding: 0 15px;
   border-radius: 10px;
-  background-color: #e0e5ec;
-  color: #4a4a4a;
+  background-color: var(--bg-base);
+  border: 1px solid var(--bento-border);
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: bold;
-  box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
-/* Efecto al hacer clic en un enlace de página */
-.pagination > span > a:active {
-  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.7), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
+.pagination > span > a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-/* Estilo para la página seleccionada (se ve hundida) */
 .pagination > span.current {
-  box-shadow: inset 4px 4px 8px 0 rgba(163, 177, 198, 0.7), inset -4px -4px 8px 0 rgba(255, 255, 255, 0.8);
-  color: #333;
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
