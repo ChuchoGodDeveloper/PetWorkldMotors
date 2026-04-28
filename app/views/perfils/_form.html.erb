@@ -1,117 +1,36 @@
-<%# Ruta: app/views/usuarios/_form.html.erb %>
-
 <div class="neo-container" style="width: 100%; max-width: 700px; margin: 0 auto; padding: 40px; background-color: #e0e5ec; border-radius: 20px; box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;">
 
-  <%= form_with(model: @usuario, local: true, html: { multipart: true, id: "usuario-form" }) do |form| %>
+  <%# Cambiamos @usuario por @perfil %>
+  <%= form_with(model: @perfil, local: true, html: { id: "perfil-form" }) do |form| %>
     
-    <% if @usuario.errors.any? %>
+    <%# Cambiamos @usuario.errors por @perfil.errors %>
+    <% if @perfil.errors.any? %>
       <div class="neo-alert-error" style="margin-bottom: 30px; padding: 20px; border-radius: 15px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; color: #e74c3c;">
-        <h4 style="margin-top: 0;"><%= pluralize(@usuario.errors.count, "error") %> impidieron guardar:</h4>
+        <h2 style="margin-top: 0; font-size: 1.1rem;"><%= pluralize(@perfil.errors.count, "error") %> impidieron guardar este perfil:</h2>
         <ul style="margin-bottom: 0;">
-          <% @usuario.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
+          <% @perfil.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
           <% end %>
         </ul>
       </div>
     <% end %>
 
-    <div style="text-align: center; margin-bottom: 40px;">
-      <div id="neo-preview-container" style="width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; overflow: hidden; box-shadow: 8px 8px 16px #babecc, -8px -8px 16px #ffffff; background-color: #e0e5ec; display: flex; justify-content: center; align-items: center; border: 5px solid #e0e5ec;">
-        
-        <%# Fix para evitar el error de signed_id en registros nuevos %>
-        <% if @usuario.persisted? && @usuario.imagen_usuario.attached? %>
-          <%= image_tag @usuario.imagen_usuario, id: "preview-imagen", style: "width: 100%; height: 100%; object-fit: cover;" %>
-          <i id="preview-placeholder" class="fas fa-user" style="font-size: 60px; color: #a3b1c6; display: none;"></i>
-        <% else %>
-          <img id="preview-imagen" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-          <i id="preview-placeholder" class="fas fa-user" style="font-size: 60px; color: #a3b1c6;"></i>
-        <% end %>
-      </div>
-
-      <div style="margin-top: 20px;">
-        <label for="input-imagen" class="neo-button" style="padding: 10px 20px; cursor: pointer; display: inline-block; border-radius: 10px; box-shadow: 4px 4px 8px #babecc, -4px -4px 8px #ffffff; color: #3498db; font-weight: bold;">
-          <i class="fas fa-camera"></i> Seleccionar Foto
-        </label>
-        <%= form.file_field :imagen_usuario, id: "input-imagen", style: "display: none;", accept: 'image/png,image/jpeg' %>
-      </div>
+    <div style="margin-bottom: 25px;">
+      <label class="neo-subtitle" style="display: block; margin-bottom: 10px; font-weight: bold;">Nombre del Perfil</label>
+      <%= form.text_field :strNombre_Perfil, class: "neo-input", style: "width: 100%; box-sizing: border-box;", placeholder: "Ej. Administrador, Vendedor...", required: true %>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
-      
-      <div class="neo-form-group">
-        <%= form.label :strNombreUsuario, "Nombre Completo", class: "neo-label", style: "display: block; margin-bottom: 10px; color: #4a5568;" %>
-        <%= form.text_field :strNombreUsuario, class: "neo-input valida-nombre", placeholder: "Ej. Juan Pérez", style: "width: 100%; border: none; padding: 12px; border-radius: 10px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; outline: none;" %>
-      </div>
-
-      <div class="neo-form-group">
-        <%= form.label :idPerfil, "Perfil de Acceso", class: "neo-label", style: "display: block; margin-bottom: 10px; color: #4a5568;" %>
-        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione un perfil" }, { class: "neo-input", style: "width: 100%; border: none; padding: 12px; border-radius: 10px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; outline: none; appearance: none;" } %>
-      </div>
-
-      <div class="neo-form-group">
-        <%= form.label :strCorreo, "Correo Electrónico", class: "neo-label" %>
-        <%= form.email_field :strCorreo, class: "neo-input", placeholder: "ejemplo@uttt.edu.mx" %>
-      </div>
-
-      <div class="neo-form-group">
-        <%= form.label :strNumeroCelular, "Teléfono", class: "neo-label" %>
-        <%= form.text_field :strNumeroCelular, class: "neo-input valida-telefono", placeholder: "10 dígitos" %>
-      </div>
-
-      <div class="neo-form-group">
-        <%= form.label :strPwd, "Contraseña", class: "neo-label" %>
-        <%= form.password_field :strPwd, class: "neo-input", placeholder: "Mínimo 6 caracteres" %>
-      </div>
-
-      <div class="neo-form-group">
-        <%= form.label :idEstado_Usuario, "Estado", class: "neo-label" %>
-        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 2]], {}, { class: "neo-input" } %>
-      </div>
-
+    <div style="margin-bottom: 30px;">
+      <label style="display: flex; align-items: center; gap: 10px; font-weight: bold; cursor: pointer; color: #4a4a4a;">
+        <%= form.check_box :bitAdministrador, class: "neo-checkbox", style: "width: 20px; height: 20px;" %>
+        ¿Este perfil tiene privilegios de Administrador?
+      </label>
     </div>
 
-    <div style="margin-top: 40px; text-align: center;">
-      <%= form.submit "Guardar Usuario", class: "neo-button-submit", style: "padding: 15px 40px; border: none; border-radius: 12px; background: #e0e5ec; box-shadow: 6px 6px 12px #babecc, -6px -6px 12px #ffffff; color: #2ecc71; font-weight: bold; font-size: 16px; cursor: pointer; transition: all 0.2s;" %>
+    <div style="text-align: right; margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
+      <%= link_to 'Cancelar', perfils_path, class: "neo-button", style: "padding: 10px 20px; text-decoration: none;" %>
+      <%= form.submit "Guardar Perfil", class: "neo-button", style: "padding: 10px 20px; cursor: pointer; border: none; font-family: inherit; font-size: inherit; color: #2e8b57;" %>
     </div>
 
   <% end %>
 </div>
-
-<style>
-  .neo-label { display: block; margin-bottom: 10px; color: #4a5568; font-weight: 600; }
-  .neo-input { width: 100%; border: none; padding: 12px; border-radius: 10px; background: #e0e5ec; box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; outline: none; box-sizing: border-box; }
-  .neo-button-submit:active { box-shadow: inset 4px 4px 8px #babecc, inset -4px -4px 8px #ffffff; transform: scale(0.98); }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('input-imagen');
-  const imgPreview = document.getElementById('preview-imagen');
-  const placeholder = document.getElementById('preview-placeholder');
-
-  if (input) {
-    input.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      
-      if (file) {
-        // Validar que sea imagen
-        if (!file.type.startsWith('image/')) {
-          alert('Por favor selecciona un archivo de imagen válido.');
-          return;
-        }
-
-        const reader = new FileReader();
-        
-        reader.onload = function(event) {
-          // Mostrar imagen y ocultar icono
-          imgPreview.src = event.target.result;
-          imgPreview.style.display = 'block';
-          if (placeholder) placeholder.style.display = 'none';
-        };
-        
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-});
-</script>
