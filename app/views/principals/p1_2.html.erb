@@ -1,64 +1,69 @@
-<div class="neo-container" style="width: 800px; max-width: 90%;">
-  <div style="text-align: left; font-size: 12px; color: #888; margin-bottom: 20px;">
-    <a href="/principal" style="color: #888; text-decoration: none;">Inicio</a> > Principal 1 > Principal 1.2
+<div class="glass-container" style="width: 100%; max-width: 1000px; margin: 0 auto; background: transparent; border: none; box-shadow: none; padding: 0;">
+  <div style="background: var(--glass-surface); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px; margin-bottom: 30px;">
+    <div style="font-size: 13px; color: var(--text-light); margin-bottom: 25px;">
+      <a href="/principal" style="color: var(--accent); text-decoration: none; font-weight: 600;">Inicio</a> > Principal 1 > Principal 1.2
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <h2 class="glass-title" style="margin: 0;">Módulo Principal 1.2</h2>
+        <div class="glass-subtitle" style="margin: 5px 0 0 0;">Vista Estilo Tarjetas (Grid)</div>
+      </div>
+      <% if tiene_permiso?('Principal 1.2', :bitAgregar) %>
+        <button class="glass-btn" onclick="agregarDato_1_2('grid-1-2')"><i class="fas fa-plus"></i> Nueva Tarjeta</button>
+      <% end %>
+    </div>
   </div>
 
-  <div class="neo-title">Módulo Principal 1.2</div>
-  <div class="neo-subtitle">Pantalla interactiva de demostración</div>
-
-  <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: flex-start;">
-    <% if tiene_permiso?('Principal 1.2', :bitAgregar) %>
-      <button class="neo-button" style="width: auto; padding: 10px 20px;" onclick="agregarDato_1_2('tabla-estatica-1-2')">Agregar Nuevo</button>
-    <% end %>
+  <div id="grid-1-2" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+    <div class="item-wrapper" style="background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px; transition: transform 0.2s;">
+      <div style="width: 40px; height: 40px; background: var(--accent); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+        <i class="fas fa-cube"></i>
+      </div>
+      <h3 class="dato-texto" style="margin: 0 0 15px 0; color: var(--text-dark); font-size: 18px;">Vehículo de muestra</h3>
+      
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <% if tiene_permiso?('Principal 1.2', :bitDetalle) %>
+          <button class="glass-btn glass-btn-outline" style="flex: 1; padding: 8px;" onclick="verDetalle(this)">Ver</button>
+        <% end %>
+        <% if tiene_permiso?('Principal 1.2', :bitEditar) %>
+          <button class="glass-btn glass-btn-outline" style="flex: 1; padding: 8px;" onclick="editarDato(this)">Editar</button>
+        <% end %>
+        <% if tiene_permiso?('Principal 1.2', :bitEliminar) %>
+          <button class="glass-btn glass-btn-danger" style="width: 100%; padding: 8px; margin-top: 5px;" onclick="eliminarDato(this)">Eliminar</button>
+        <% end %>
+      </div>
+    </div>
   </div>
-
-  <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a;">
-    <thead>
-      <tr style="border-bottom: 2px solid #c9d0dabc;">
-        <th style="padding: 10px;">Dato de Prueba</th>
-        <th style="padding: 10px; text-align: center;">Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-estatica-1-2">
-      <tr style="border-bottom: 1px solid #c9d0dabc;">
-        <td style="padding: 10px;" class="dato-texto">Vehículo de muestra</td>
-        <td style="padding: 10px; text-align: center;">
-          <% if tiene_permiso?('Principal 1.2', :bitDetalle) %>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="verDetalle(this)">Detalle</button>
-          <% end %>
-          <% if tiene_permiso?('Principal 1.2', :bitEditar) %>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarDato(this)">Editar</button>
-          <% end %>
-          <% if tiene_permiso?('Principal 1.2', :bitEliminar) %>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarDato(this)">Eliminar</button>
-          <% end %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>
 
 <script>
-  window.agregarDato_1_2 = function(tablaId) {
-    const dato = prompt("Ingresa el nombre del nuevo registro:");
+  window.agregarDato_1_2 = function(contenedorId) {
+    const dato = prompt("Ingresa el título de la tarjeta:");
     if (!dato) return;
 
-    const tbody = document.getElementById(tablaId);
-    const tr = document.createElement('tr');
-    tr.style.borderBottom = "1px solid #c9d0dabc";
+    const grid = document.getElementById(contenedorId);
+    const card = document.createElement('div');
+    card.className = 'item-wrapper';
+    card.style.cssText = "background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); border-radius: 16px; padding: 25px;";
 
-    let botonesHTML = '';
+    let botonesHTML = '<div style="display: flex; gap: 10px; flex-wrap: wrap;">';
     <% if tiene_permiso?('Principal 1.2', :bitDetalle) %>
-      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="verDetalle(this)">Detalle</button> ';
+      botonesHTML += '<button class="glass-btn glass-btn-outline" style="flex: 1; padding: 8px;" onclick="verDetalle(this)">Ver</button>';
     <% end %>
     <% if tiene_permiso?('Principal 1.2', :bitEditar) %>
-      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarDato(this)">Editar</button> ';
+      botonesHTML += '<button class="glass-btn glass-btn-outline" style="flex: 1; padding: 8px;" onclick="editarDato(this)">Editar</button>';
     <% end %>
     <% if tiene_permiso?('Principal 1.2', :bitEliminar) %>
-      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarDato(this)">Eliminar</button>';
+      botonesHTML += '<button class="glass-btn glass-btn-danger" style="width: 100%; padding: 8px; margin-top: 5px;" onclick="eliminarDato(this)">Eliminar</button>';
     <% end %>
+    botonesHTML += '</div>';
 
-    tr.innerHTML = `<td style="padding: 10px;" class="dato-texto">${dato}</td><td style="padding: 10px; text-align: center;">${botonesHTML}</td>`;
-    tbody.appendChild(tr);
+    card.innerHTML = `
+      <div style="width: 40px; height: 40px; background: var(--accent); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;"><i class="fas fa-star"></i></div>
+      <h3 class="dato-texto" style="margin: 0 0 15px 0; color: var(--text-dark); font-size: 18px;">${dato}</h3>
+      ${botonesHTML}
+    `;
+    grid.appendChild(card);
   };
 </script>

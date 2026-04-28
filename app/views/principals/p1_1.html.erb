@@ -1,80 +1,82 @@
-<div class="neo-container" style="width: 800px; max-width: 90%;">
-  <div style="text-align: left; font-size: 12px; color: #888; margin-bottom: 20px;">
-    <a href="/principal" style="color: #888; text-decoration: none;">Inicio</a> > Principal 1 > Principal 1.1
+<div class="glass-container" style="width: 100%; max-width: 900px; margin: 0 auto;">
+  <div style="font-size: 13px; color: var(--text-light); margin-bottom: 25px;">
+    <a href="/principal" style="color: var(--accent); text-decoration: none; font-weight: 600;">Inicio</a> > Principal 1 > Principal 1.1
   </div>
 
-  <div class="neo-title">Módulo Principal 1.1</div>
-  <div class="neo-subtitle">Pantalla interactiva de demostración</div>
+  <h2 class="glass-title" style="margin-bottom: 5px;">Módulo Principal 1.1</h2>
+  <div class="glass-subtitle" style="margin-bottom: 30px;">Vista Estilo Tabla de Datos</div>
 
-  <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: flex-start;">
+  <div style="margin-bottom: 25px;">
     <% if tiene_permiso?('Principal 1.1', :bitAgregar) %>
-      <button class="neo-button" style="width: auto; padding: 10px 20px;" onclick="agregarDato_1_1('tabla-estatica-1-1')">Agregar Nuevo</button>
+      <button class="glass-btn" onclick="agregarDato_1_1('tabla-1-1')">+ Agregar Fila</button>
     <% end %>
   </div>
 
-  <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a;">
-    <thead>
-      <tr style="border-bottom: 2px solid #c9d0dabc;">
-        <th style="padding: 10px;">Datos de Prueba</th>
-        <th style="padding: 10px; text-align: center;">Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-estatica-1-1">
-      <tr style="border-bottom: 1px solid #c9d0dabc;">
-        <td style="padding: 10px;" class="dato-texto">Vehículo de muestra</td>
-        <td style="padding: 10px; text-align: center;">
-          <% if tiene_permiso?('Principal 1.1', :bitDetalle) %>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="verDetalle(this)">Detalle</button>
-          <% end %>
-          <% if tiene_permiso?('Principal 1.1', :bitEditar) %>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarDato(this)">Editar</button>
-          <% end %>
-          <% if tiene_permiso?('Principal 1.1', :bitEliminar) %>
-            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarDato(this)">Eliminar</button>
-          <% end %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div style="background: rgba(255,255,255,0.3); border-radius: 16px; overflow: hidden; border: 1px solid var(--glass-border);">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+      <thead style="background: rgba(255,255,255,0.4);">
+        <tr>
+          <th style="padding: 18px; color: var(--text-dark);">Descripción del Dato</th>
+          <th style="padding: 18px; text-align: center; color: var(--text-dark); width: 250px;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-1-1">
+        <tr class="item-wrapper" style="border-bottom: 1px solid var(--glass-border);">
+          <td style="padding: 18px; font-weight: 500;" class="dato-texto">Vehículo de muestra</td>
+          <td style="padding: 18px; text-align: center;">
+            <div style="display: flex; gap: 8px; justify-content: center;">
+              <% if tiene_permiso?('Principal 1.1', :bitDetalle) %>
+                <button class="glass-btn glass-btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="verDetalle(this)">Ver</button>
+              <% end %>
+              <% if tiene_permiso?('Principal 1.1', :bitEditar) %>
+                <button class="glass-btn glass-btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="editarDato(this)">Editar</button>
+              <% end %>
+              <% if tiene_permiso?('Principal 1.1', :bitEliminar) %>
+                <button class="glass-btn glass-btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="eliminarDato(this)">Borrar</button>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-  window.agregarDato_1_1 = function(tablaId) {
+  window.agregarDato_1_1 = function(contenedorId) {
     const dato = prompt("Ingresa el nombre del nuevo registro:");
     if (!dato) return;
 
-    const tbody = document.getElementById(tablaId);
+    const tbody = document.getElementById(contenedorId);
     const tr = document.createElement('tr');
-    tr.style.borderBottom = "1px solid #c9d0dabc";
+    tr.className = 'item-wrapper';
+    tr.style.borderBottom = "1px solid var(--glass-border)";
 
-    let botonesHTML = '';
+    let botonesHTML = '<div style="display: flex; gap: 8px; justify-content: center;">';
     <% if tiene_permiso?('Principal 1.1', :bitDetalle) %>
-      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="verDetalle(this)">Detalle</button> ';
+      botonesHTML += '<button class="glass-btn glass-btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="verDetalle(this)">Ver</button>';
     <% end %>
     <% if tiene_permiso?('Principal 1.1', :bitEditar) %>
-      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarDato(this)">Editar</button> ';
+      botonesHTML += '<button class="glass-btn glass-btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="editarDato(this)">Editar</button>';
     <% end %>
     <% if tiene_permiso?('Principal 1.1', :bitEliminar) %>
-      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarDato(this)">Eliminar</button>';
+      botonesHTML += '<button class="glass-btn glass-btn-danger" style="padding: 6px 12px; font-size: 12px;" onclick="eliminarDato(this)">Borrar</button>';
     <% end %>
+    botonesHTML += '</div>';
 
-    tr.innerHTML = `<td style="padding: 10px;" class="dato-texto">${dato}</td><td style="padding: 10px; text-align: center;">${botonesHTML}</td>`;
+    tr.innerHTML = `<td style="padding: 18px; font-weight: 500;" class="dato-texto">${dato}</td><td style="padding: 18px;">${botonesHTML}</td>`;
     tbody.appendChild(tr);
   };
 
-  // Métodos genéricos para interacción visual (sin afectar base de datos)
   window.editarDato = window.editarDato || function(btn) {
-    const td = btn.closest('tr').querySelector('.dato-texto');
-    const nuevoDato = prompt("Edita el dato:", td.innerText);
-    if (nuevoDato) td.innerText = nuevoDato;
+    const nodo = btn.closest('.item-wrapper').querySelector('.dato-texto');
+    const nuevo = prompt("Edita el dato:", nodo.innerText);
+    if (nuevo) nodo.innerText = nuevo;
   };
-
   window.eliminarDato = window.eliminarDato || function(btn) {
-    if (confirm("¿Estás seguro de eliminar este registro de prueba?")) btn.closest('tr').remove();
+    if (confirm("¿Eliminar este registro?")) btn.closest('.item-wrapper').remove();
   };
-
   window.verDetalle = window.verDetalle || function(btn) {
-    const td = btn.closest('tr').querySelector('.dato-texto');
-    alert("INFORMACIÓN DEL REGISTRO\n\nNombre: " + td.innerText + "\nEstado: Activo\nFecha simulada: " + new Date().toLocaleDateString());
+    alert("Dato: " + btn.closest('.item-wrapper').querySelector('.dato-texto').innerText);
   };
 </script>
