@@ -1,5 +1,9 @@
 class UsuariosController < ApplicationController
   skip_before_action :verify_authenticity_token
+  
+  # Filtros de seguridad para bloquear el acceso directo por URL
+  before_action :verificar_permiso_editar, only: [:edit, :update]
+  before_action :verificar_permiso_eliminar, only: [:destroy]
 
   # --- MÉTODO PARA LA VISTA HOME ---
   def perfil_actual
@@ -63,15 +67,15 @@ class UsuariosController < ApplicationController
   end
 
   def create
-  @usuario = Usuario.new(usuario_params)
+    @usuario = Usuario.new(usuario_params)
 
-  if @usuario.save
-    # Redirige a la página principal (Home)
-    redirect_to principal_path, notice: 'Usuario creado exitosamente.'
-  else
-    render :new, status: :unprocessable_entity
+    if @usuario.save
+      # Redirige a la página principal (Home)
+      redirect_to principal_path, notice: 'Usuario creado exitosamente.'
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
-end
 
   def update
     @usuario = Usuario.find(params[:id])
@@ -98,5 +102,18 @@ end
 
   def usuario_params
     params.require(:usuario).permit(:strNombreUsuario, :idPerfil, :strPwd, :strCorreo, :strNumeroCelular, :idEstado_Usuario, :imagen_usuario)
+  end
+
+  # --- MÉTODOS DE SEGURIDAD ---
+  def verificar_permiso_editar
+    unless tiene_permiso?('Usuarios', :bitEditar)
+      redirect_to usuarios_path, alert: 'No tienes permiso para editar usuarios.'
+    end
+  end
+
+  def verificar_permiso_eliminar
+    unless tiene_permiso?('Usuarios', :bitEliminar)
+      redirect_to usuarios_path, alert: 'No tienes permiso para eliminar usuarios.'
+    end
   end
 end

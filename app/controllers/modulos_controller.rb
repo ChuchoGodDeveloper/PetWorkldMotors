@@ -1,19 +1,23 @@
 class ModulosController < ApplicationController
   skip_before_action :verify_authenticity_token
   
-  # Bloqueos por URL antes de ejecutar la acción
-  before_action -> { verificar_acceso('Modulos', :bitEditar) }, only: [:edit, :update]
-  before_action -> { verificar_acceso('Modulos', :bitEliminar) }, only: [:destroy]
+  # Filtros de seguridad
+  before_action :verificar_permiso_editar, only: [:edit, :update]
+  before_action :verificar_permiso_eliminar, only: [:destroy]
 
-  # ... (resto de tus métodos index, show, new, create, etc. se quedan igual)
+  # ... aquí van tus métodos index, show, create, etc. ...
 
   private
 
-  def verificar_acceso(nombre_modulo, accion_columna)
-    unless tiene_permiso?(nombre_modulo, accion_columna)
-      redirect_to modulos_path, alert: 'No tienes permiso para realizar esta acción.'
+  def verificar_permiso_editar
+    unless tiene_permiso?('Modulos', :bitEditar)
+      redirect_to modulos_path, alert: 'No tienes permiso para editar módulos.'
     end
   end
 
-  # ... (modulo_params y gestionar_apartado_dinamico se quedan igual)
+  def verificar_permiso_eliminar
+    unless tiene_permiso?('Modulos', :bitEliminar)
+      redirect_to modulos_path, alert: 'No tienes permiso para eliminar módulos.'
+    end
+  end
 end
