@@ -4,10 +4,12 @@
   </div>
 
   <div class="neo-title">Módulo Principal 1.1</div>
-  <div class="neo-subtitle">Pantalla estática de demostración</div>
+  <div class="neo-subtitle">Pantalla interactiva de demostración</div>
 
   <div style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: flex-start;">
-    <button id="btn-agregar" class="neo-button" style="width: auto; padding: 10px 20px;">Agregar Nuevo</button>
+    <% if tiene_permiso?('Principal 1.1', :bitAgregar) %>
+      <button class="neo-button" style="width: auto; padding: 10px 20px;" onclick="agregarDato_1_1('tabla-estatica-1-1')">Agregar Nuevo</button>
+    <% end %>
   </div>
 
   <table style="width: 100%; border-collapse: collapse; text-align: left; color: #4a4a4a;">
@@ -17,13 +19,19 @@
         <th style="padding: 10px; text-align: center;">Acciones</th>
       </tr>
     </thead>
-    <tbody id="tabla-estatica">
+    <tbody id="tabla-estatica-1-1">
       <tr style="border-bottom: 1px solid #c9d0dabc;">
-        <td style="padding: 10px;">Vehículo de muestra</td>
+        <td style="padding: 10px;" class="dato-texto">Vehículo de muestra</td>
         <td style="padding: 10px; text-align: center;">
-          <button class="neo-button btn-detalle" style="padding: 5px 10px; font-size: 12px; width: auto;">Detalle</button>
-          <button class="neo-button btn-editar" style="padding: 5px 10px; font-size: 12px; width: auto;">Editar</button>
-          <button class="neo-button btn-eliminar" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;">Eliminar</button>
+          <% if tiene_permiso?('Principal 1.1', :bitDetalle) %>
+            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="verDetalle(this)">Detalle</button>
+          <% end %>
+          <% if tiene_permiso?('Principal 1.1', :bitEditar) %>
+            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarDato(this)">Editar</button>
+          <% end %>
+          <% if tiene_permiso?('Principal 1.1', :bitEliminar) %>
+            <button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarDato(this)">Eliminar</button>
+          <% end %>
         </td>
       </tr>
     </tbody>
@@ -31,39 +39,42 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const permisosLocales = JSON.parse(localStorage.getItem('permisos_usuario') || '{}');
+  window.agregarDato_1_1 = function(tablaId) {
+    const dato = prompt("Ingresa el nombre del nuevo registro:");
+    if (!dato) return;
 
-  // Buscar permisos exactos de este módulo
-  let misPermisos = null;
-  for (const categoria in permisosLocales) {
-    const moduloEncontrado = permisosLocales[categoria].find(m => m.nombre === 'Principal 1.1');
-    if (moduloEncontrado) {
-      misPermisos = moduloEncontrado.permisos;
-      break;
-    }
-  }
+    const tbody = document.getElementById(tablaId);
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = "1px solid #c9d0dabc";
 
-  // Lógica de visualización basada en permisos
-  if (!misPermisos || !misPermisos.consulta) {
-    document.getElementById('tabla-estatica').innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 20px;">No tienes permiso de consulta</td></tr>';
-  }
+    let botonesHTML = '';
+    <% if tiene_permiso?('Principal 1.1', :bitDetalle) %>
+      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="verDetalle(this)">Detalle</button> ';
+    <% end %>
+    <% if tiene_permiso?('Principal 1.1', :bitEditar) %>
+      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editarDato(this)">Editar</button> ';
+    <% end %>
+    <% if tiene_permiso?('Principal 1.1', :bitEliminar) %>
+      botonesHTML += '<button class="neo-button" style="padding: 5px 10px; font-size: 12px; width: auto; color: #ff4757;" onclick="eliminarDato(this)">Eliminar</button>';
+    <% end %>
 
-  if (!misPermisos || !misPermisos.agregar) {
-    const btnAgregar = document.getElementById('btn-agregar');
-    if (btnAgregar) btnAgregar.style.display = 'none';
-  }
+    tr.innerHTML = `<td style="padding: 10px;" class="dato-texto">${dato}</td><td style="padding: 10px; text-align: center;">${botonesHTML}</td>`;
+    tbody.appendChild(tr);
+  };
 
-  if (!misPermisos || !misPermisos.editar) {
-    document.querySelectorAll('.btn-editar').forEach(btn => btn.style.display = 'none');
-  }
+  // Métodos genéricos para interacción visual (sin afectar base de datos)
+  window.editarDato = window.editarDato || function(btn) {
+    const td = btn.closest('tr').querySelector('.dato-texto');
+    const nuevoDato = prompt("Edita el dato:", td.innerText);
+    if (nuevoDato) td.innerText = nuevoDato;
+  };
 
-  if (!misPermisos || !misPermisos.eliminar) {
-    document.querySelectorAll('.btn-eliminar').forEach(btn => btn.style.display = 'none');
-  }
+  window.eliminarDato = window.eliminarDato || function(btn) {
+    if (confirm("¿Estás seguro de eliminar este registro de prueba?")) btn.closest('tr').remove();
+  };
 
-  if (!misPermisos || !misPermisos.detalle) {
-    document.querySelectorAll('.btn-detalle').forEach(btn => btn.style.display = 'none');
-  }
-});
+  window.verDetalle = window.verDetalle || function(btn) {
+    const td = btn.closest('tr').querySelector('.dato-texto');
+    alert("INFORMACIÓN DEL REGISTRO\n\nNombre: " + td.innerText + "\nEstado: Activo\nFecha simulada: " + new Date().toLocaleDateString());
+  };
 </script>
