@@ -1,62 +1,61 @@
-<div class="neo-container">
+<div class="glass-container">
   
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-    <h2 class="neo-title" style="margin: 0;">Gestión de Usuarios</h2>
+    <h2 class="glass-title" style="margin: 0;">Gestión de Usuarios</h2>
     
-    <%# Validación para el botón de Agregar %>
     <% if tiene_permiso?('Usuarios', :bitAgregar) %>
-      <%= link_to 'Nuevo Usuario', new_usuario_path, class: "neo-button", style: "width: auto; padding: 10px 20px; text-decoration: none;" %>
+      <%= link_to 'Nuevo Usuario', new_usuario_path, class: "glass-btn", style: "text-decoration: none;" %>
     <% end %>
   </div>
 
   <div style="margin-bottom: 30px; text-align: left;">
-    <label class="neo-subtitle" style="display: block; margin-bottom: 10px; font-weight: bold;">BUSCAR POR USUARIO</label>
-    <input type="text" id="buscador-input" placeholder="🔍 Buscar por nombre, perfil o correo..." class="neo-input" style="margin: 0; width: 100%; max-width: 500px;" autocomplete="off">
+    <label style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-light);">BUSCAR POR USUARIO</label>
+    <input type="text" id="buscador-input" placeholder="🔍 Buscar por nombre, perfil o correo..." class="glass-input" style="margin: 0; width: 100%; max-width: 500px;" autocomplete="off">
   </div>
 
-  <div style="overflow-x: auto;">
+  <div style="background: rgba(255,255,255,0.3); border-radius: 16px; border: 1px solid var(--glass-border); padding: 20px; overflow-x: auto;">
     <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 800px;">
       <thead>
-        <tr style="border-bottom: 2px solid rgba(163,177,198,0.6);">
-          <th style="padding: 15px 10px; color: #333;">IMAGEN</th>
-          <th style="padding: 15px 10px; color: #333;">USUARIO</th>
-          <th style="padding: 15px 10px; color: #333;">PERFIL</th>
-          <th style="padding: 15px 10px; color: #333;">CORREO</th>
-          <th style="padding: 15px 10px; color: #333;">CELULAR</th>
-          <th style="padding: 15px 10px; text-align: center; color: #333;">ESTADO</th>
-          <th style="padding: 15px 10px; text-align: center; color: #333;">ACCIONES</th>
+        <tr>
+          <th>IMAGEN</th>
+          <th>USUARIO</th>
+          <th>PERFIL</th>
+          <th>CORREO</th>
+          <th>CELULAR</th>
+          <th style="text-align: center;">ESTADO</th>
+          <th style="text-align: center;">ACCIONES</th>
         </tr>
       </thead>
       <tbody>
         <% @usuarios.each do |usuario| %>
-          <tr class="fila-busqueda" data-search="<%= "#{usuario.strNombreUsuario} #{usuario.perfil&.strNombre_Perfil} #{usuario.strCorreo}".downcase %>" style="border-bottom: 1px solid rgba(163,177,198,0.3);">
-            <td style="padding: 15px 10px; color: #666;">
+          <tr class="fila-busqueda" data-search="<%= "#{usuario.strNombreUsuario} #{usuario.perfil&.strNombre_Perfil} #{usuario.strCorreo}".downcase %>">
+            <td>
               <% if usuario.imagen_usuario.attached? %>
-                <%= image_tag usuario.imagen_usuario, style: "width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 4px 4px 8px 0 rgba(163, 177, 198, 0.7), -4px -4px 8px 0 rgba(255, 255, 255, 0.8);" %>
+                <%= image_tag usuario.imagen_usuario, style: "width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" %>
               <% else %>
-                <span style="font-size: 0.85rem; color: #999;">Sin Imagen</span>
+                <div style="width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.5); border: 1px dashed var(--glass-border); display: flex; align-items: center; justify-content: center;">
+                  <span style="font-size: 0.65rem; color: var(--text-light); text-align: center; line-height: 1;">Sin<br>Img</span>
+                </div>
               <% end %>
             </td>
-            <td style="padding: 15px 10px; font-weight: bold; color: #4a4a4a;"><%= usuario.strNombreUsuario %></td>
-            <td style="padding: 15px 10px; color: #666;"><%= usuario.perfil&.strNombre_Perfil %></td>
-            <td style="padding: 15px 10px; color: #666;"><%= usuario.strCorreo %></td>
-            <td style="padding: 15px 10px; color: #666;"><%= usuario.strNumeroCelular.present? ? usuario.strNumeroCelular : '-' %></td>
-            <td style="padding: 15px 10px; text-align: center;">
-              <span style="padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; <%= usuario.idEstado_Usuario == 1 ? 'color: #2e8b57; background: #e0e5ec; box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.7), inset -3px -3px 6px rgba(255, 255, 255, 0.8);' : 'color: #7f8c8d;' %>">
+            <td style="font-weight: 600;"><%= usuario.strNombreUsuario %></td>
+            <td style="color: var(--text-light);"><%= usuario.perfil&.strNombre_Perfil %></td>
+            <td style="color: var(--text-light);"><%= usuario.strCorreo %></td>
+            <td style="color: var(--text-light);"><%= usuario.strNumeroCelular.present? ? usuario.strNumeroCelular : '-' %></td>
+            <td style="text-align: center;">
+              <span style="padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; background: <%= usuario.idEstado_Usuario == 1 ? 'rgba(37, 99, 235, 0.1)' : 'rgba(255, 255, 255, 0.4)' %>; color: <%= usuario.idEstado_Usuario == 1 ? 'var(--accent)' : 'var(--text-light)' %>;">
                 <%= usuario.idEstado_Usuario == 1 ? 'Activo' : 'Inactivo' %>
               </span>
             </td>
-            <td style="padding: 15px 10px; text-align: center;">
+            <td style="text-align: center;">
               <div style="display: flex; gap: 10px; justify-content: center;">
                 
-                <%# Validación para el botón de Editar %>
                 <% if tiene_permiso?('Usuarios', :bitEditar) %>
-                  <%= link_to 'Editar', edit_usuario_path(usuario), class: "neo-button", style: "width: auto; padding: 8px 15px; text-decoration: none;" %>
+                  <%= link_to 'Editar', edit_usuario_path(usuario), class: "glass-btn glass-btn-outline", style: "padding: 8px 16px; font-size: 0.9rem;" %>
                 <% end %>
 
-                <%# Validación para el botón de Eliminar %>
                 <% if tiene_permiso?('Usuarios', :bitEliminar) %>
-                  <%= button_to 'Eliminar', usuario_path(usuario), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "neo-button", style: "width: auto; padding: 8px 15px; color: #ff4757;" %>
+                  <%= button_to 'Eliminar', usuario_path(usuario), method: :delete, form: { data: { turbo_confirm: '¿Estás seguro?' } }, class: "glass-btn glass-btn-danger", style: "padding: 8px 16px; font-size: 0.9rem;" %>
                 <% end %>
 
               </div>
@@ -78,7 +77,6 @@
     const rows = document.querySelectorAll('.fila-busqueda');
 
     rows.forEach(row => {
-      // Tomamos la data que guardamos combinada (nombre + perfil + correo)
       const searchData = row.getAttribute('data-search') || '';
       if (searchData.includes(term)) {
         row.style.display = ''; 

@@ -1,16 +1,15 @@
-<div class="neo-container" style="width: 100%; max-width: 900px; margin: 0 auto; padding: 40px; box-sizing: border-box;">
-  <h2 class="neo-title" style="text-align: center; margin-bottom: 40px;"><%= @usuario.new_record? ? 'Nuevo Usuario' : 'Editar Usuario' %></h2>
+<div class="glass-container" style="width: 100%; max-width: 900px; margin: 0 auto; padding: 40px; box-sizing: border-box;">
+  <h2 class="glass-title" style="text-align: center; margin-bottom: 40px;"><%= @usuario.new_record? ? 'Nuevo Usuario' : 'Editar Usuario' %></h2>
 
   <%= form_with(model: @usuario, local: true, html: { multipart: true }) do |form| %>
     
-    <%# --- BLOQUE DE ALERTAS DE ERROR MODIFICADO --- %>
     <% if @usuario.errors.any? %>
-      <div class="error-msg neo-alert-error" style="color: #ff4757; margin-bottom: 25px; padding: 20px; border-radius: 15px; background: #ffebee; border: 1px solid #ffcdd2; text-align: left; box-shadow: inset 4px 4px 8px rgba(255,193,204,0.5), inset -4px -4px 8px rgba(255,255,255,0.8);">
-        <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 15px;">⚠️ Por favor verifica bien los datos ingresados:</h4>
-        <p style="margin-bottom: 5px; font-size: 14px; color: #d63031;">Es posible que algún dato ya esté registrado (como el <strong>Correo</strong> o el <strong>Nombre de Usuario</strong>).</p>
+      <div style="background: rgba(225, 29, 72, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 20px; border-radius: 16px; margin-bottom: 30px; text-align: left;">
+        <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 15px; font-weight: 600;">⚠️ Por favor verifica bien los datos ingresados:</h4>
+        <p style="margin-bottom: 5px; font-size: 14px;">Es posible que algún dato ya esté registrado (como el <strong>Correo</strong> o el <strong>Nombre de Usuario</strong>).</p>
         
         <% if @usuario.new_record? %>
-          <p style="margin-bottom: 15px; font-size: 13px; color: #d63031;"><em>Nota: Si habías seleccionado una foto de perfil, por favor vuelve a seleccionarla.</em></p>
+          <p style="margin-bottom: 15px; font-size: 13px;"><em>Nota: Si habías seleccionado una foto de perfil, por favor vuelve a seleccionarla.</em></p>
         <% end %>
 
         <ul style="margin: 0; padding-left: 20px; font-size: 13px;">
@@ -21,62 +20,60 @@
       </div>
     <% end %>
 
-    <div style="text-align: center; margin-bottom: 40px; width: 100%;">
-      <%= form.label :imagen_usuario, "FOTO DE PERFIL", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 15px; font-size: 13px;" %>
+    <div style="text-align: center; margin-bottom: 40px; width: 100%; background: rgba(255,255,255,0.3); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border);">
+      <%= form.label :imagen_usuario, "FOTO DE PERFIL", style: "display: block; font-weight: 600; margin-bottom: 15px; font-size: 13px; color: var(--text-light);" %>
       
-      <div style="width: 130px; height: 130px; margin: 0 auto 20px auto; border-radius: 50%; overflow: hidden; box-shadow: inset 4px 4px 8px rgba(163,177,198,0.5), inset -4px -4px 8px rgba(255,255,255,0.8); background-color: #e0e5ec; display: flex; justify-content: center; align-items: center;">
+      <div style="width: 130px; height: 130px; margin: 0 auto 20px auto; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,0.5); border: 2px dashed var(--glass-border); display: flex; justify-content: center; align-items: center;">
         
-        <%# --- CONDICIÓN ANTI-CRASH AGREGADA AQUÍ (.persisted?) --- %>
         <% if @usuario.imagen_usuario.attached? && @usuario.persisted? %>
           <%= image_tag @usuario.imagen_usuario, id: "preview-imagen", style: "width: 100%; height: 100%; object-fit: cover;" %>
-          <i id="preview-placeholder" class="fas fa-user" style="font-size: 50px; color: #a3b1c6; display: none;"></i>
+          <i id="preview-placeholder" class="fas fa-user" style="font-size: 50px; color: var(--text-light); display: none;"></i>
         <% else %>
           <img id="preview-imagen" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-          <i id="preview-placeholder" class="fas fa-user" style="font-size: 50px; color: #a3b1c6;"></i>
+          <i id="preview-placeholder" class="fas fa-user" style="font-size: 50px; color: var(--text-light);"></i>
         <% end %>
       </div>
 
-      <%= form.file_field :imagen_usuario, id: "input-imagen", accept: "image/png, image/jpeg, image/jpg", class: "neo-input", style: "width: 100%; max-width: 400px; padding: 10px; margin: 0 auto; box-sizing: border-box; cursor: pointer;" %>
+      <%= form.file_field :imagen_usuario, id: "input-imagen", accept: "image/png, image/jpeg, image/jpg", class: "glass-input", style: "width: 100%; max-width: 400px; padding: 10px; margin: 0 auto; box-sizing: border-box; cursor: pointer;" %>
     </div>
 
-
-    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; width: 100%; background: rgba(255,255,255,0.3); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border);">
 
       <div style="width: 48%; margin-bottom: 25px;">
-        <%= form.label :strNombreUsuario, "NOMBRE DE USUARIO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px; text-align: left;" %>
-        <%= form.text_field :strNombreUsuario, class: "neo-input valida-nombre", required: true, minlength: "3", style: "width: 100%; margin: 0; box-sizing: border-box;" %>
+        <%= form.label :strNombreUsuario, "NOMBRE DE USUARIO *", style: "display: block; font-weight: 600; margin-bottom: 10px; font-size: 13px; text-align: left; color: var(--text-light);" %>
+        <%= form.text_field :strNombreUsuario, class: "glass-input valida-nombre", required: true, minlength: "3", style: "width: 100%; margin: 0; box-sizing: border-box;" %>
       </div>
 
       <div style="width: 48%; margin-bottom: 25px;">
-        <%= form.label :idPerfil, "PERFIL ASIGNADO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px; text-align: left;" %>
-        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione un perfil..." }, { class: "neo-input", required: true, style: "width: 100%; margin: 0; appearance: auto; box-sizing: border-box;" } %>
+        <%= form.label :idPerfil, "PERFIL ASIGNADO *", style: "display: block; font-weight: 600; margin-bottom: 10px; font-size: 13px; text-align: left; color: var(--text-light);" %>
+        <%= form.collection_select :idPerfil, Perfil.all, :id, :strNombre_Perfil, { prompt: "Seleccione un perfil..." }, { class: "glass-input", required: true, style: "width: 100%; margin: 0; appearance: auto; box-sizing: border-box;" } %>
       </div>
 
       <div style="width: 48%; margin-bottom: 25px;">
-        <%= form.label :strCorreo, "CORREO ELECTRÓNICO *", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px; text-align: left;" %>
-        <%= form.email_field :strCorreo, class: "neo-input valida-correo", required: true, style: "width: 100%; margin: 0; box-sizing: border-box;" %>
+        <%= form.label :strCorreo, "CORREO ELECTRÓNICO *", style: "display: block; font-weight: 600; margin-bottom: 10px; font-size: 13px; text-align: left; color: var(--text-light);" %>
+        <%= form.email_field :strCorreo, class: "glass-input valida-correo", required: true, style: "width: 100%; margin: 0; box-sizing: border-box;" %>
       </div>
 
       <div style="width: 48%; margin-bottom: 25px;">
-        <%= form.label :strNumeroCelular, "NÚMERO CELULAR", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px; text-align: left;" %>
-        <%= form.text_field :strNumeroCelular, class: "neo-input valida-telefono", maxlength: "10", style: "width: 100%; margin: 0; box-sizing: border-box;" %>
+        <%= form.label :strNumeroCelular, "NÚMERO CELULAR", style: "display: block; font-weight: 600; margin-bottom: 10px; font-size: 13px; text-align: left; color: var(--text-light);" %>
+        <%= form.text_field :strNumeroCelular, class: "glass-input valida-telefono", maxlength: "10", style: "width: 100%; margin: 0; box-sizing: border-box;" %>
       </div>
 
       <div style="width: 48%; margin-bottom: 25px;">
-        <%= form.label :strPwd, @usuario.new_record? ? "CONTRASEÑA *" : "NUEVA CONTRASEÑA", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px; text-align: left;" %>
-        <%= form.password_field :strPwd, class: "neo-input valida-pwd", required: @usuario.new_record?, style: "width: 100%; margin: 0; box-sizing: border-box;" %>
+        <%= form.label :strPwd, @usuario.new_record? ? "CONTRASEÑA *" : "NUEVA CONTRASEÑA", style: "display: block; font-weight: 600; margin-bottom: 10px; font-size: 13px; text-align: left; color: var(--text-light);" %>
+        <%= form.password_field :strPwd, class: "glass-input valida-pwd", required: @usuario.new_record?, style: "width: 100%; margin: 0; box-sizing: border-box;" %>
       </div>
 
       <div style="width: 48%; margin-bottom: 25px;">
-        <%= form.label :idEstado_Usuario, "ESTADO", class: "neo-subtitle", style: "display: block; font-weight: bold; margin-bottom: 10px; font-size: 13px; text-align: left;" %>
-        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 0]], {}, class: "neo-input", style: "width: 100%; margin: 0; appearance: auto; box-sizing: border-box;" %>
+        <%= form.label :idEstado_Usuario, "ESTADO", style: "display: block; font-weight: 600; margin-bottom: 10px; font-size: 13px; text-align: left; color: var(--text-light);" %>
+        <%= form.select :idEstado_Usuario, [['Activo', 1], ['Inactivo', 0]], {}, class: "glass-input", style: "width: 100%; margin: 0; appearance: auto; box-sizing: border-box;" %>
       </div>
 
     </div>
 
-    <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 20px; width: 100%;">
-      <%= link_to "Cancelar", usuarios_path, class: "neo-button", style: "text-decoration: none; padding: 12px 30px; display: flex; align-items: center;" %>
-      <%= form.submit "Guardar Usuario", class: "neo-button", style: "padding: 12px 40px;" %>
+    <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px; width: 100%;">
+      <%= link_to "Cancelar", usuarios_path, class: "glass-btn glass-btn-outline", style: "padding: 12px 30px; border: 1px solid var(--glass-border);" %>
+      <%= form.submit "Guardar Usuario", class: "glass-btn", style: "padding: 12px 40px;" %>
     </div>
   <% end %>
 </div>
